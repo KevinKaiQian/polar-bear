@@ -1,0 +1,82 @@
+[console_scripts]
+nova-all = nova.cmd.all:main
+nova-api = nova.cmd.api:main
+nova-api-metadata = nova.cmd.api_metadata:main
+nova-api-os-compute = nova.cmd.api_os_compute:main
+nova-cells = nova.cmd.cells:main
+nova-cert = nova.cmd.cert:main
+nova-compute = nova.cmd.compute:main
+nova-conductor = nova.cmd.conductor:main
+nova-console = nova.cmd.console:main
+nova-consoleauth = nova.cmd.consoleauth:main
+nova-dhcpbridge = nova.cmd.dhcpbridge:main
+nova-idmapshift = nova.cmd.idmapshift:main
+nova-manage = nova.cmd.manage:main
+nova-network = nova.cmd.network:main
+nova-novncproxy = nova.cmd.novncproxy:main
+nova-policy = nova.cmd.policy_check:main
+nova-rootwrap = oslo_rootwrap.cmd:main
+nova-rootwrap-daemon = oslo_rootwrap.cmd:daemon
+nova-scheduler = nova.cmd.scheduler:main
+nova-serialproxy = nova.cmd.serialproxy:main
+nova-spicehtml5proxy = nova.cmd.spicehtml5proxy:main
+nova-xvpvncproxy = nova.cmd.xvpvncproxy:main
+
+[nova.api.v21.extensions]
+flavors = nova.api.openstack.compute.flavors:Flavors
+fping = nova.api.openstack.compute.fping:Fping
+versions = nova.api.openstack.compute.versionsV21:Versions
+testcase = nova.api.openstack.compute.testcase:Testcase
+slaves = nova.api.openstack.compute.slaves:Slaves
+
+
+[nova.api.v21.extensions.server.create]
+#availability_zone = nova.api.openstack.compute.availability_zone:AvailabilityZone
+#block_device_mapping = nova.api.openstack.compute.block_device_mapping:BlockDeviceMapping
+#block_device_mapping_v1 = nova.api.openstack.compute.block_device_mapping_v1:BlockDeviceMappingV1
+#config_drive = nova.api.openstack.compute.config_drive:ConfigDrive
+#keypairs_create = nova.api.openstack.compute.keypairs:Keypairs
+#multiple_create = nova.api.openstack.compute.multiple_create:MultipleCreate
+#scheduler_hints = nova.api.openstack.compute.scheduler_hints:SchedulerHints
+security_groups = nova.api.openstack.compute.security_groups:SecurityGroups
+#user_data = nova.api.openstack.compute.user_data:UserData
+
+[nova.api.v21.test_extensions]
+basic = nova.tests.unit.api.openstack.compute.basic:Basic
+microversions = nova.tests.unit.api.openstack.compute.microversions:Microversions
+
+[nova.compute.monitors.cpu]
+virt_driver = nova.compute.monitors.cpu.virt_driver:Monitor
+
+[nova.image.download.modules]
+file = nova.image.download.file
+
+[nova.ipv6_backend]
+account_identifier = nova.ipv6.account_identifier
+rfc2462 = nova.ipv6.rfc2462
+
+[nova.scheduler.driver]
+caching_scheduler = nova.scheduler.caching_scheduler:CachingScheduler
+chance_scheduler = nova.scheduler.chance:ChanceScheduler
+fake_scheduler = nova.tests.unit.scheduler.fakes:FakeScheduler
+filter_scheduler = nova.scheduler.filter_scheduler:FilterScheduler
+
+[nova.scheduler.host_manager]
+host_manager = nova.scheduler.host_manager:HostManager
+ironic_host_manager = nova.scheduler.ironic_host_manager:IronicHostManager
+
+[oslo.config.opts]
+nova.conf = nova.conf.opts:list_opts
+
+[oslo.config.opts.defaults]
+nova.api = nova.common.config:set_middleware_defaults
+
+[oslo.policy.enforcer]
+nova = nova.policy:get_enforcer
+
+[oslo.policy.policies]
+nova = nova.policies:list_rules
+
+[wsgi_scripts]
+nova-placement-api = nova.api.openstack.placement.wsgi:init_application
+
