@@ -5,7 +5,7 @@
      compute 模块抽象成测试设备，抽象的方式是以plugin的形式完成的。
      比如现在有编译插件 部署插件 测试用例插件 。一个compute可以拥有其中一个或者多个。
     
-现状：主体结构调试完成（从发消息到api - conductor - compute 最终执行）。现在 compute 执行的log 还没有上报。
+现状：主体结构调试完成（从发消息到api - conductor - compute 最终执行）。现在 compute 执行的log 还没有上报。 guide 还没有写具体，现在是安装不起来的。
 
 计划：
     log 处理
