@@ -39,9 +39,11 @@
 
 使用方法：
 
+
 查询所有的slave节概况：
 	
 curl -s http://135.251.149.80:8774/v2.1/slaves/detail | python -m json.tool
+
 	{
 		"b16059f4-4000-4c02-b222-22cfc62108de": {
 			"compute_node_method": {
@@ -54,9 +56,11 @@ curl -s http://135.251.149.80:8774/v2.1/slaves/detail | python -m json.tool
 			"id": 6
 		}
 	}
+	
 查询所有的slave节点具体的信息：
 
 curl -s http://135.251.149.80:8774/v2.1/slaves/detail | python -m json.tool
+
 	{
 		"5b9e675c-728d-4eb7-9b9f-cc76ebdd4381": {
 			"compute_node_method": {
