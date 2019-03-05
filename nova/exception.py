@@ -909,6 +909,8 @@ class KeypairNotFound(NotFound):
 class ServiceNotFound(NotFound):
     msg_fmt = _("Service %(service_id)s could not be found.")
 
+class CaseNotFound(NotFound):
+    msg_fmt = _("Testcase %(testcase_id)s could not be found.")
 
 class ServiceBinaryExists(NovaException):
     msg_fmt = _("Service with host %(host)s binary %(binary)s exists.")

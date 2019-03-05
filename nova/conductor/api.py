@@ -180,8 +180,11 @@ class ComputeTaskAPI(object):
     def __init__(self):
         self.conductor_compute_rpcapi = rpcapi.ComputeTaskAPI()
         
-    def handle_cases(self, context,cases):
-        self.conductor_compute_rpcapi.handle_cases(context,cases)
+    def handle_cases(self, context,data):
+        self.conductor_compute_rpcapi.handle_cases(context,data)
+        
+    def report_cases_result(self,context,Caseid="",output="",status="fail"):
+        self.conductor_compute_rpcapi.report_cases_result(context,Caseid=Caseid,output=output,status=status)
 
     def resize_instance(self, context, instance, extra_instance_updates,
                         scheduler_hint, flavor, reservations,

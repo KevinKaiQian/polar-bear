@@ -33,6 +33,7 @@ from nova.i18n import _LW
 from nova import utils
 from nova import conductor
 from oslo_serialization import jsonutils
+from nova import objects
 
 ALIAS = 'testcases'
 
@@ -50,23 +51,24 @@ class CaseController(wsgi.Controller):
 
         # Look for API schema of server create extension
 
-    @extensions.expected_errors((400, 403))
-    def index(self, req):
-        """Returns a list of server names and ids for a given user."""
-        context = req.environ['nova.context']
-        try:
-            servers = {'servers':'testbed'}
-        except exception.Invalid as err:
-            raise exc.HTTPBadRequest(explanation=err.format_message())
-        return servers
-
-
     @extensions.expected_errors(404)
     def show(self, req, id):
-        """Returns server details by server id."""
-        context = req.environ['nova.context']
-        instance = self._get_server(context, req, id, is_detail=True)
-        return self._view_builder.show(req, instance)
+        try:
+            
+            context = req.environ['nova.context']
+            result ={}
+            try:
+                case=objects.TestCase.get_by_id(context,id)
+            except exception.CaseNotFound:
+                result['message']="not find testcase through id = " + str(id)
+                return jsonutils.dumps(result)
+    
+            result['Message']=case["message"]
+            result['CaseId']=case["id"]
+            result['Status']=case['status']
+            return jsonutils.dumps(result)
+        except exception.Invalid as err:
+            raise exc.HTTPBadRequest(explanation=err.format_message())
 
     @wsgi.response(202)
     @extensions.expected_errors((400, 403, 409))
@@ -74,38 +76,19 @@ class CaseController(wsgi.Controller):
         try:
             #import pdb;pdb.set_trace()
             context = req.environ['nova.context']
-            body_data = body
-            self.compute_task_api.handle_cases(context,body_data)
-            return  jsonutils.dumps(body_data)
+            data = body
+
+            case=objects.TestCase(context)
+            case.host=data['host']
+            case.status="initing"
+            case.case_name= data['method']
+            case.create() 
+            data['id']= case['id']
+            self.compute_task_api.handle_cases(context,data)
+            res={"CaseId":case['id']}
+            return  jsonutils.dumps(res)
         except exception.Invalid as err:
             raise exc.HTTPBadRequest(explanation=err.format_message())
-
-
-    @extensions.expected_errors((400, 404))
-    def update(self, req, id, body):
-        """Update server then pass on to version-specific controller."""
-
-        ctxt = req.environ['nova.context']
-        server = body['server']
-        print server
-
-
-    @wsgi.response(204)
-    @extensions.expected_errors((404, 409))
-    def delete(self, req, id):
-        """Destroys a server."""
-        try:
-            self._delete(req.environ['nova.context'], req, id)
-        except exception.InstanceNotFound:
-            msg = _("Instance could not be found")
-            raise exc.HTTPNotFound(explanation=msg)
-        except exception.InstanceUnknownCell as e:
-            raise exc.HTTPNotFound(explanation=e.format_message())
-        except exception.InstanceIsLocked as e:
-            raise exc.HTTPConflict(explanation=e.format_message())
-        except exception.InstanceInvalidState as state_error:
-            common.raise_http_conflict_for_instance_invalid_state(state_error,
-                    'delete', id)
 
 class Testcase(extensions.V21APIExtensionBase):
     """Servers."""

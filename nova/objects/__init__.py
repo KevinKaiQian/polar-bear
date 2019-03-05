@@ -35,5 +35,6 @@ def register_all():
     __import__('nova.objects.security_group_rule')
     __import__('nova.objects.service')
     __import__('nova.objects.vcpu_model')
+    __import__('nova.objects.testcase')
     
 

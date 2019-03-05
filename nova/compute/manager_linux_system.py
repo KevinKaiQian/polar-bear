@@ -4,31 +4,18 @@ import copy
 from oslo_config import cfg
 from oslo_log import log as logging
 import oslo_messaging as messaging
-from oslo_utils import excutils
-from oslo_utils import versionutils
-import six
+
 
 from nova.compute import rpcapi as compute_rpcapi
-from nova.compute import task_states
-from nova.compute import utils as compute_utils
-from nova.compute.utils import wrap_instance_event
-from nova.compute import vm_states
-from nova.conductor.tasks import live_migrate
-from nova.conductor.tasks import migrate
+
 from nova.db import base
 from nova import exception
 from nova.i18n import _, _LE, _LI, _LW
 
-from nova import manager
-
-from nova import objects
-from nova.objects import base as nova_object
-from nova import rpc
-from nova.scheduler import client as scheduler_client
-from nova.scheduler import utils as scheduler_utils
 from nova import servicegroup
 from nova import utils
-from nova.compute import utils as nova_utils
+from nova.compute import utils as compute_utils
+from nova import conductor
 
 LOG = logging.getLogger(__name__)
 CONF = cfg.CONF
@@ -43,27 +30,52 @@ class ComputeManager_linux_system(base.Base):
         super(ComputeManager_linux_system, self).__init__()
         self.compute_rpcapi = compute_rpcapi.ComputeAPI()
         self.servicegroup_api = servicegroup.API()
-        self.notifier = rpc.get_notifier('compute', CONF.host)
+        self.compute_task_api = conductor.ComputeTaskAPI()
+        
 
     def reset(self):
         LOG.info(_LI('Reloading compute RPC API'))
         compute_rpcapi.LAST_VERSION = None
         self.compute_rpcapi = compute_rpcapi.ComputeAPI()
 
-
-    @nova_utils.add_task_describe(describe="parameters is dict. command key is linux cmd. args key is parameters of linux cmd")       
-    @nova_utils.mark_task_status(namespace='linux_system',method_mark=True)
-    def system_information(self, context, parameters):
+    @compute_utils.mark_describe_task(namespace='linux_system',
+                                      describe="parameters is dict. \
+address is target address \
+count is count of ping . \
+interval is time of two packet")
+    def ping(self, context, parameters):
         #import pdb;pdb.set_trace()
-        print parameters    
-
-    @nova_utils.add_task_describe(describe="parameters is dict. command key is linux cmd. args key is parameters of linux cmd")      
-    @nova_utils.mark_task_status(namespace='linux_system',method_mark=True)
+        address=parameters.get('address',4)
+        count= "-c "+str(parameters.get('count',4))
+        interval="-i "+str( parameters.get('interval',1))
+        Caseid= parameters.get('id',None)
+        ca_dir="/root"
+        out, err =utils.execute('ping', address,count ,interval, cwd=ca_dir,run_as_root=True)
+        self.report_result(context, Caseid=Caseid, out=out, status=err)
+    
+    @compute_utils.mark_describe_task(namespace='linux_system',
+                                      describe="parameters is dict. \
+cmd is command line. \
+args is parameter")
     def run_shell(self, context, parameters):
-        cmd= parameters.get('command',None)
+        cmd= parameters.get('cmd',None)
         arg= parameters.get('args',None)
+        Caseid= parameters.get('id',None)
         ca_dir="/root"
         out, err =utils.execute(cmd, arg , cwd=ca_dir,run_as_root=True)
-        print out
+        
+        self.report_result(context, Caseid=Caseid, out=out, status=err)
+
+    def report_result(self,context,Caseid=None,out=None,status=None):
+        #import pdb;pdb.set_trace()
+        if Caseid is None or out is None or status is None:pass
+        else:
+            status = "fail"
+            output = "not stdout "
+            if status != 1:status ="successfully"
+            if out :output = out
+            self.compute_task_api.report_cases_result(context, Caseid=Caseid,output=output,status=status)
+        
+
     
 

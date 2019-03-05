@@ -686,6 +686,29 @@ def compute_node_search_by_hypervisor(context, hypervisor_match):
 
 
 @pick_context_manager_writer
+def testcase_create(context, values):
+    """Creates a new ComputeNode and populates the capacity fields
+    with the most recent data.
+    """
+    convert_objects_related_datetimes(values)
+
+    case_ref = models.TestCase()
+    case_ref.update(values)
+    case_ref.save(context.session)
+
+    return case_ref
+
+@pick_context_manager_reader
+def testcase_get(context, testcase_id):
+    query = model_query(context, models.TestCase).filter_by(id=testcase_id)
+
+    result = query.first()
+    if not result:
+        raise exception.CaseNotFound(testcase_id=testcase_id)
+
+    return result
+
+@pick_context_manager_writer
 def compute_node_create(context, values):
     """Creates a new ComputeNode and populates the capacity fields
     with the most recent data.
@@ -697,6 +720,15 @@ def compute_node_create(context, values):
     compute_node_ref.save(context.session)
 
     return compute_node_ref
+
+@oslo_db_api.wrap_db_retry(max_retries=5, retry_on_deadlock=True)
+@pick_context_manager_writer
+def testcase_update(context, testcase_id, values):
+    testcase_ref = testcase_get(context, testcase_id)
+
+    testcase_ref.update(values)
+
+    return testcase_ref
 
 
 @oslo_db_api.wrap_db_retry(max_retries=5, retry_on_deadlock=True)
@@ -1154,6 +1186,8 @@ def floating_ip_update(context, address, values):
     except db_exc.DBDuplicateEntry:
         raise exception.FloatingIpExists(address=values['address'])
     return float_ip_ref
+
+
 
 
 ###################

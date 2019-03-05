@@ -340,6 +340,25 @@ def compute_node_statistics(context):
     return IMPL.compute_node_statistics(context)
 
 
+def testcase_create(context, values):
+    """Create a compute node from the values dictionary.
+
+    :param context: The security context
+    :param values: Dictionary containing compute node properties
+
+    :returns: Dictionary-like object containing the properties of the created
+              node, including its corresponding service and statistics
+    """
+    return IMPL.testcase_create(context, values)
+
+def testcase_get(context, testcase_id):
+
+    return IMPL.testcase_get(context, testcase_id)
+
+def testcase_update(context, testcase_id, values):
+
+    return IMPL.testcase_update(context, testcase_id, values)
+
 ###################
 
 

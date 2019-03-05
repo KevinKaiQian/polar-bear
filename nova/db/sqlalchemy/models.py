@@ -120,8 +120,31 @@ class ComputeNode(BASE, NovaBase, models.SoftDeleteMixin):
     uuid = Column(String(36), nullable=True)
     compute_node_type = Column(String(36), nullable=False)
     compute_node_method = Column(String(255))
+    
+    
+    
 
+class TestCase(BASE, NovaBase, models.SoftDeleteMixin):
 
+    __tablename__ = 'TestCase'
+    __table_args__ = (
+        schema.UniqueConstraint(
+            'case_name', 'host', 'beginning', 'ending',
+            name="uniq_test_case0case_name0host0beginning0ending"
+        ),
+    )
+    id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
+    uuid = Column(String(36), nullable=True)
+    case_name = Column(String(255), default="0")
+    status = Column(String(255), default="0")
+    host = Column(String(255), default="0")
+    beginning = Column(DateTime, default=timeutils.utcnow,
+                              nullable=True)
+    ending = Column(DateTime, default=timeutils.utcnow,
+                           nullable=True)
+    message = Column(String(255), default="0")
+    errors = Column(Integer(), default=0)
+    
 
 class Certificate(BASE, NovaBase, models.SoftDeleteMixin):
     """Represents a x509 certificate."""
