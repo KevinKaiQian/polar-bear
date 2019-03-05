@@ -95,64 +95,67 @@ git clone https://github.com/KevinKaiQian/polar-bear.git
 
 
 查询所有的slave节概况：
+
 	
 curl -s http://192.168.1.181:8774/v2.1/slaves| python -m json.tool
 
+	{
+	    "850c5dc5-a007-47f6-a513-1924576e6050": {
+		"host": "192.168.1.181",
+		"id": 1
+	    }
+	}
 
-{
-    "850c5dc5-a007-47f6-a513-1924576e6050": {
-        "host": "192.168.1.181",
-        "id": 1
-    }
-}
 	
 查询所有的slave节点具体的信息：
 
 curl -s http://192.168.1.181:8774/v2.1/slaves/detail | python -m json.tool
 
-{
-    "850c5dc5-a007-47f6-a513-1924576e6050": {
-        "compute_node_method": {
-            "build_server": {
-                "ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet"
-            },
-            "linux_system": {
-                "ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet",
-                "run_shell": "parameters is dict. cmd is command line. args is parameter"
-            }
-        },
-        "compute_node_type": "linux_system,build_server",
-        "host": "192.168.1.181",
-        "id": 1
-    }
-}
+	{
+	    "850c5dc5-a007-47f6-a513-1924576e6050": {
+		"compute_node_method": {
+		    "build_server": {
+			"ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet"
+		    },
+		    "linux_system": {
+			"ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet",
+			"run_shell": "parameters is dict. cmd is command line. args is parameter"
+		    }
+		},
+		"compute_node_type": "linux_system,build_server",
+		"host": "192.168.1.181",
+		"id": 1
+	    }
+	}
+
 
 查询单个slave节点具体的信息：
 
-	curl -s http://192.168.1.181:8774/v2.1/slaves/1 | python -m json.tool
+curl -s http://192.168.1.181:8774/v2.1/slaves/1 | python -m json.tool
 
-{
-    "compute_node_method": {
-        "build_server": {
-            "ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet"
-        },
-        "linux_system": {
-            "ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet",
-            "run_shell": "parameters is dict. cmd is command line. args is parameter"
-        }
-    },
-    "compute_node_type": "linux_system,build_server",
-    "host": "192.168.1.181",
-    "id": 1,
-    "uuid": "850c5dc5-a007-47f6-a513-1924576e6050"
-}
+	{
+	    "compute_node_method": {
+		"build_server": {
+		    "ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet"
+		},
+		"linux_system": {
+		    "ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet",
+		    "run_shell": "parameters is dict. cmd is command line. args is parameter"
+		}
+	    },
+	    "compute_node_type": "linux_system,build_server",
+	    "host": "192.168.1.181",
+	    "id": 1,
+	    "uuid": "850c5dc5-a007-47f6-a513-1924576e6050"
+	}
 
 执行一个case：
 
 curl -s http://192.168.1.181:8774/v2.1/testcases -X POST -H "Content-Type:application/json" -d '{"plugin":"linux_system","host":"192.168.1.181","method":"run_shell","parameters":{"cmd":"ls","args":"-alt"}}' | python -m json.tool
-{
-    "CaseId": 1
-}
+	
+	{
+	    "CaseId": 1
+	}
 
 查询case执行结果：
 
@@ -160,11 +163,11 @@ curl -s http://192.168.1.181:8774/v2.1/testcases -X POST -H "Content-Type:applic
  curl -s http://192.168.1.181:8774/v2.1/testcases/4 | python -m json.tool
 
 
-{
-    "CaseId": 4,
-    "Message": "total 28\ndr-xr-x---.  6 root root  188 Mar  4 22:38 .\ndrwxr-----.  3 root root   19 Mar  4 22:38 .pki\ndrwxr-xr-x.  3 root root   24 Mar  4 22:38 test\ndrwxr-xr-x.  4 root root   29 Mar  4 22:28 .cache\n-rw-------.  1 root root   64 Jan  5 12:46 .bash_history\ndrwxr-xr-x.  3 root root   18 Nov 16 22:56 .config\n-rw-------.  1 root root 1900 Nov 16 22:54 anaconda-ks.cfg\ndr-xr-xr-x. 17 root root  224 Nov 16 22:54 ..\n-rw-r--r--.  1 root root   18 Dec 29  2013 .bash_logout\n-rw-r--r--.  1 root root  176 Dec 29  2013 .bash_profile\n-rw-r--r--.  1 root root  176 Dec 29  2013 .bashrc\n-rw-r--r--.  1 root root  100 Dec 29  2013 .cshrc\n-rw-r--r--.  1 root root  129 Dec 29  2013 .tcshrc\n",
-    "Status": "successfully"
-}
+	{
+	    "CaseId": 4,
+	    "Message": "total 28\ndr-xr-x---.  6 root root  188 Mar  4 22:38 .\ndrwxr-----.  3 root root   19 Mar  4 22:38 .pki\ndrwxr-xr-x.  3 root root   24 Mar  4 22:38 test\ndrwxr-xr-x.  4 root root   29 Mar  4 22:28 .cache\n-rw-------.  1 root root   64 Jan  5 12:46 .bash_history\ndrwxr-xr-x.  3 root root   18 Nov 16 22:56 .config\n-rw-------.  1 root root 1900 Nov 16 22:54 anaconda-ks.cfg\ndr-xr-xr-x. 17 root root  224 Nov 16 22:54 ..\n-rw-r--r--.  1 root root   18 Dec 29  2013 .bash_logout\n-rw-r--r--.  1 root root  176 Dec 29  2013 .bash_profile\n-rw-r--r--.  1 root root  176 Dec 29  2013 .bashrc\n-rw-r--r--.  1 root root  100 Dec 29  2013 .cshrc\n-rw-r--r--.  1 root root  129 Dec 29  2013 .tcshrc\n",
+	    "Status": "successfully"
+	}
 
 请求分析：
 	{
