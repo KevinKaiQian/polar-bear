@@ -93,6 +93,10 @@ git clone https://github.com/KevinKaiQian/polar-bear.git
 
 使用方法：
 
+启动api controller 和 compute 服务。
+	polar-bear/nova/cmd/api.py
+	polar-bear/nova/cmd/controller.py
+	polar-bear/nova/cmd/compute.py
 
 查询所有的slave节概况：
 
