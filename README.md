@@ -199,7 +199,7 @@ class ComputeManager_linux_system(base.Base):
 
     target = messaging.Target(namespace='linux_system', version='4.0')
     
-    #import pdb;pdb.set_trace()
+
     def __init__(self):
         super(ComputeManager_linux_system, self).__init__()
         self.compute_rpcapi = compute_rpcapi.ComputeAPI()
