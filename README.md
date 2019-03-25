@@ -214,9 +214,9 @@ class ComputeManager_linux_system(base.Base):
 
     @compute_utils.mark_describe_task(namespace='linux_system',
                                       describe="parameters is dict. \
-address is target address \
-count is count of ping . \
-interval is time of two packet")
+					address is target address \
+					count is count of ping . \
+					interval is time of two packet")
     def ping(self, context, parameters):
 
         address=parameters.get('address',4)
@@ -229,23 +229,14 @@ interval is time of two packet")
     
     @compute_utils.mark_describe_task(namespace='linux_system',
                                       describe="parameters is dict. \
-cmd is command line. \
-args is parameter")
+					cmd is command line. \
+					args is parameter")
     def run_shell(self, context, parameters):
         cmd= parameters.get('cmd',None)
         arg= parameters.get('args',None)
         Caseid= parameters.get('id',None)
         ca_dir="/root"
         out, err =utils.execute(cmd, arg , cwd=ca_dir,run_as_root=True)
-        
         self.report_result(context, Caseid=Caseid, out=out, status=err)
 
-    def report_result(self,context,Caseid=None,out=None,status=None):
-        import pdb;pdb.set_trace()
-        if Caseid is None or out is None or status is None:pass
-        else:
-            status = "fail"
-            output = "not stdout "
-            if status != 1:status ="successfully"
-            if out :output = out
-            self.compute_task_api.report_cases_result(context, Caseid=Caseid,output=output,status=status)
+  
