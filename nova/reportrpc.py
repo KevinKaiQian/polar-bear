@@ -74,25 +74,44 @@ class ReportRPCAPI(object):
         self.finish_flag= self.finish_flag-1
 
         status = arg.get("status",None)
-        #method = arg.get("method",None)
+
         out = arg.get("out",None)
         if status:
             self.report_result(context,status=status,out=out)
-        #resp = {'arg': arg}
-        #print json.dumps(arg,indent=10,sort_keys=False)
-        #return jsonutils.to_primitive(resp)
-        
 
+        
     def report_result(self,context,status,out):
+        
+        def summary(template):
+            total ,failure, sucessfully = 0,0,0
+            for key ,value in template.items():
+                try:
+                    if isinstance(int(key),(int)):
+                        total+=1
+                        summary_result = True
+                        if isinstance(value,(dict,)):
+                            for k,v in value.items():
+                                if v == "FAIL":summary_result = False
+                        if summary_result == False: failure +=1
+                        else:sucessfully+=1
+                except Exception :
+                    print (Exception)
+
+
+            return total ,failure, sucessfully
+
+
         plan=objects.TestPlan.get_by_id(context,self.Plan_Id)
         
         res=json.loads(plan['result'])
         res[self.CaseId][self.StepId]=status
-        plan['result']=json.dumps(res)
+        
         plan['message']=plan['message']+out
-        print self.CaseId
-        print self.StepId
-        print "XXXX"+str(res)
+        
+        res['total'],res['failure'],res['sucessfully']=summary(res)
+        
+        plan['result']=json.dumps(res)
+
         plan.save()
 
 
