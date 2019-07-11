@@ -1,30 +1,30 @@
 
 
-Õâ¸öÏîÄ¿ÊÇ»ùÓÚopenstack¿ò¼ÜÖØ¹¹µÄ²âÊÔ¿ò¼Ü¡£±£ÁôÁËapi conductor ºÍ compute Ä£¿é¡£
+è¿™ä¸ªé¡¹ç›®æ˜¯åŸºäºopenstackæ¡†æ¶é‡æ„çš„æµ‹è¯•æ¡†æ¶ã€‚ä¿ç•™äº†api conductor å’Œ compute æ¨¡å—ã€‚åœ¨githubä¸Šæˆ‘æ²¡æœ‰ä¸Šä¼ ä¸€éƒ¨åˆ†å…³é”®ä»£ç ï¼Œä¸èƒ½å®‰è£…ã€‚
 
-Ä¿±ê£º
-	ÒÔapiÄ£¿éÎª¶ÔÍâ½»»¥Í¨µÀ¡£controllerÕûºÏÁËconductorºÍschedule,¸ºÔğËùÓĞÂß¼­ºÍÄ£°å½âÎö¡£
-	compute Ä£¿é³éÏó³É²âÊÔÉè±¸£¬³éÏóµÄ·½Ê½ÊÇÒÔpluginµÄĞÎÊ½Íê³ÉµÄ¡£±ÈÈç³éÏó³É±àÒë²å¼ş ²¿Êğ²å¼ş ²âÊÔÓÃÀı²å¼ş ¡£Ò»¸öcompute¿ÉÒÔÍ¬Ê±ÓµÓĞÆäÖĞÒ»¸ö»òÕß¶à¸ö²å¼ş¡£
+ç›®æ ‡ï¼š
+	ä»¥apiæ¨¡å—ä¸ºå¯¹å¤–äº¤äº’é€šé“ã€‚controlleræ•´åˆäº†conductorå’Œschedule,è´Ÿè´£æ‰€æœ‰é€»è¾‘å’Œæ¨¡æ¿è§£æã€‚
+	compute æ¨¡å—æŠ½è±¡æˆæµ‹è¯•è®¾å¤‡ï¼ŒæŠ½è±¡çš„æ–¹å¼æ˜¯ä»¥pluginçš„å½¢å¼å®Œæˆçš„ã€‚æ¯”å¦‚æŠ½è±¡æˆç¼–è¯‘æ’ä»¶ éƒ¨ç½²æ’ä»¶ æµ‹è¯•ç”¨ä¾‹æ’ä»¶ ã€‚ä¸€ä¸ªcomputeå¯ä»¥åŒæ—¶æ‹¥æœ‰å…¶ä¸­ä¸€ä¸ªæˆ–è€…å¤šä¸ªæ’ä»¶ã€‚
     
-¼Ü¹¹¸Å¿ö£º
-	ÓÃ»§·¢ËÍÏûÏ¢µ½ api, api³õ²½´¦ÀíÊı¾İÈ»ºó·¢ËÍ¸øcontroller¡£
-	controller ¸ºÔğÄ£°åµÄ½âÎö,compute½ÚµãµÄµ÷¶È, ÈÕÖ¾µÄÊÕ¼¯¡£
-	compute ¾ÍÊÇÊµÏÖ²ã,Ö´ĞĞ²âÊÔ²½Öè¡£
-	´óÖÂ¸Å¿ö²Î¿¼Í¼Æ¬£ºoverview.png
+æ¶æ„æ¦‚å†µï¼š
+	ç”¨æˆ·å‘é€æ¶ˆæ¯åˆ° api, apiåˆæ­¥å¤„ç†æ•°æ®ç„¶åå‘é€ç»™controllerã€‚
+	controller è´Ÿè´£æ¨¡æ¿çš„è§£æ,computeèŠ‚ç‚¹çš„è°ƒåº¦, æ—¥å¿—çš„æ”¶é›†ã€‚
+	compute å°±æ˜¯å®ç°å±‚,æ‰§è¡Œæµ‹è¯•æ­¥éª¤ã€‚
+	å¤§è‡´æ¦‚å†µå‚è€ƒå›¾ç‰‡ï¼šoverview.png
 
     
-°²×°×¼±¸£º
-	1.ËùÓĞµÄ°²×°ÊÇ»ùÓÚcentosÏµÍ³£¨×îºÃÃ»ÓĞ°²×°¹ıpythonÆäËü¿âµÄ£¬ÓĞ¿ÉÄÜ²úÉú³åÍ»¡£ÏµÍ³×îºÃÒ²ÊÇcentos£¬Ô­ÔòÉÏÆäËüÏµÍ³Ò²¿ÉÒÔ£¬³öÎÊÌâ×Ô¼ºµ÷ÕûÏÂ£©
-	2.python Ê¹ÓÃpython2.7¡£ ÎÒÃ»ÓĞÊ¹ÓÃsix Ä£¿éÀ´¼æÈİpython3
-	3.×¼±¸Ò»¸öÊı¾İ¿â
+å®‰è£…å‡†å¤‡ï¼š
+	1.æ‰€æœ‰çš„å®‰è£…æ˜¯åŸºäºcentosç³»ç»Ÿï¼ˆæœ€å¥½æ²¡æœ‰å®‰è£…è¿‡pythonå…¶å®ƒåº“çš„ï¼Œæœ‰å¯èƒ½äº§ç”Ÿå†²çªã€‚ç³»ç»Ÿæœ€å¥½ä¹Ÿæ˜¯centosï¼ŒåŸåˆ™ä¸Šå…¶å®ƒç³»ç»Ÿä¹Ÿå¯ä»¥ï¼Œå‡ºé—®é¢˜è‡ªå·±è°ƒæ•´ä¸‹ï¼‰
+	2.python ä½¿ç”¨python2.7ã€‚ æˆ‘æ²¡æœ‰ä½¿ç”¨six æ¨¡å—æ¥å…¼å®¹python3
+	3.å‡†å¤‡ä¸€ä¸ªæ•°æ®åº“
     
-°²×°²½Öè£º
+å®‰è£…æ­¥éª¤ï¼š
 
-ÏÂÔØ´úÂë£º 
+ä¸‹è½½ä»£ç ï¼š 
 
 	git clone https://github.com/KevinKaiQian/polar-bear.git
 
-°²×°rabbitmq ×é¼ş
+å®‰è£…rabbitmq ç»„ä»¶
 
 	yum install centos-release-openstack-queens -y
 
@@ -39,40 +39,40 @@
 	systemctl disable firewalld && systemctl stop firewalld
 
 
-°²×° MySQL Êı¾İ¿â Python ±ê×¼Êı¾İ¿â½Ó¿Ú
+å®‰è£… MySQL æ•°æ®åº“ Python æ ‡å‡†æ•°æ®åº“æ¥å£
 
      yum install MySQL-python -y
 
-°²×° python µÚÈı·½¿â £º
+å®‰è£… python ç¬¬ä¸‰æ–¹åº“ ï¼š
 
      easy_install pip
 
      pip install -r requirements.txt
 
-     requirements.txtÔÚÏîÄ¿¸ùÄ¿Â¼
+     requirements.txtåœ¨é¡¹ç›®æ ¹ç›®å½•
 
 
-ĞŞ¸ÄÅäÖÃÎÄ¼ş£º
+ä¿®æ”¹é…ç½®æ–‡ä»¶ï¼š
 
-	ÅäÖÃÎÄ¼ş polar-bear/nova/cmd/nova.ini .
+	é…ç½®æ–‡ä»¶ polar-bear/nova/cmd/nova.ini .
 
 	[DEFAULT]
 	debug = true
 	verbose = true
 	#log_file =/root/api/nova/nova.log
-	log_dir = /root/test/polar-bear/nova(logÄ¿Â¼)
+	log_dir = /root/test/polar-bear/nova(logç›®å½•)
 	fping_path=/usr/sbin/fping
-	compute_plugin=nova.compute.manager_linux_system.ComputeManager_linux_system£¨ÕâÀïÃæÅäÖÃÁËÁ½¸ö²å¼ş£©
+	compute_plugin=nova.compute.manager_linux_system.ComputeManager_linux_systemï¼ˆè¿™é‡Œé¢é…ç½®äº†ä¸¤ä¸ªæ’ä»¶ï¼‰
 	osapi_compute_workers=1
-	my_ip=192.168.1.181£¨Ö÷»úµØÖ·£©
-	host=192.168.1.181£¨Ö÷»úµØÖ·£©
+	my_ip=192.168.1.181ï¼ˆä¸»æœºåœ°å€ï¼‰
+	host=192.168.1.181ï¼ˆä¸»æœºåœ°å€ï¼‰
 	enabled_apis=osapi_compute
 	rpc_backend=rabbit
 	compute_driver=libvirt.LibvirtDriver
-	default_publisher_id=192.168.1.181£¨Ö÷»úµØÖ·£©
+	default_publisher_id=192.168.1.181ï¼ˆä¸»æœºåœ°å€ï¼‰
 	scheduler_max_attempts=3
 	[database]
-	connection=mysql+pymysql://root:t-span@192.168.1.99/nova£¨Êı¾İ¿âÅäÖÃ£©
+	connection=mysql+pymysql://root:t-span@192.168.1.99/novaï¼ˆæ•°æ®åº“é…ç½®ï¼‰
 	[oslo_messaging_amqp]
 	[oslo_messaging_notifications]
 	driver=messagingv2
@@ -80,7 +80,7 @@
 	kombu_ssl_keyfile=
 	kombu_ssl_certfile=
 	kombu_ssl_ca_certs=
-	rabbit_host=192.168.1.181£¨rabbitmq µØÖ·¡££©
+	rabbit_host=192.168.1.181ï¼ˆrabbitmq åœ°å€ã€‚ï¼‰
 	rabbit_port=5672
 	rabbit_use_ssl=False
 	rabbit_userid=openstack
@@ -93,27 +93,27 @@
 
 	#[formatters]
 
-´´½¨Êı¾İ¿ânova£º
+åˆ›å»ºæ•°æ®åº“novaï¼š
 
-	mysql±ØĞë×Ô¼º°²×°,ÔÚmysqlÀïÃæ´´½¨Ò»¸öÃû×ÖÎªnovaµÄdatabase¡£
+	mysqlå¿…é¡»è‡ªå·±å®‰è£…,åœ¨mysqlé‡Œé¢åˆ›å»ºä¸€ä¸ªåå­—ä¸ºnovaçš„databaseã€‚
 
-´´½¨Êı¾İ¿â±í£º
+åˆ›å»ºæ•°æ®åº“è¡¨ï¼š
 
-	cd polar-bear/nova/cmd Ö´ĞĞÃüÁîpython manage.py£¨ÔÚnova database ´´½¨±í£©
-
-
+	cd polar-bear/nova/cmd æ‰§è¡Œå‘½ä»¤python manage.pyï¼ˆåœ¨nova database åˆ›å»ºè¡¨ï¼‰
 
 
-Ê¹ÓÃ·½·¨£º
-
-Æô¶¯·şÎñ£º
-
-	Æô¶¯api·şÎñ£ºcd polar-bear/nova/cmd Ö´ĞĞÃüÁîpython api.py
-	Æô¶¯controller·şÎñ£ºcd polar-bear/nova/cmd Ö´ĞĞÃüÁîpython controller.py
-	Æô¶¯compute·şÎñ£ºcd polar-bear/nova/cmd Ö´ĞĞÃüÁîpython compute.py
 
 
-²éÑ¯ËùÓĞµÄslave½Ú¸Å¿ö£º
+ä½¿ç”¨æ–¹æ³•ï¼š
+
+å¯åŠ¨æœåŠ¡ï¼š
+
+	å¯åŠ¨apiæœåŠ¡ï¼šcd polar-bear/nova/cmd æ‰§è¡Œå‘½ä»¤python api.py
+	å¯åŠ¨controlleræœåŠ¡ï¼šcd polar-bear/nova/cmd æ‰§è¡Œå‘½ä»¤python controller.py
+	å¯åŠ¨computeæœåŠ¡ï¼šcd polar-bear/nova/cmd æ‰§è¡Œå‘½ä»¤python compute.py
+
+
+æŸ¥è¯¢æ‰€æœ‰çš„slaveèŠ‚æ¦‚å†µï¼š
 	
 	curl -s http://192.168.1.181:8774/v2.1/slaves| python -m json.tool
 
@@ -125,7 +125,7 @@
 			}
 		}
 	
-²éÑ¯ËùÓĞµÄslave½Úµã¾ßÌåµÄĞÅÏ¢£º
+æŸ¥è¯¢æ‰€æœ‰çš„slaveèŠ‚ç‚¹å…·ä½“çš„ä¿¡æ¯ï¼š
 
 	curl -s http://192.168.1.181:8774/v2.1/slaves/detail | python -m json.tool
 
@@ -146,7 +146,7 @@
 			}
 		}
 
-²éÑ¯µ¥¸öslave½Úµã¾ßÌåµÄĞÅÏ¢£º
+æŸ¥è¯¢å•ä¸ªslaveèŠ‚ç‚¹å…·ä½“çš„ä¿¡æ¯ï¼š
 
 	curl -s http://192.168.1.181:8774/v2.1/slaves/1 | python -m json.tool
 
@@ -166,20 +166,20 @@
 			"uuid": "850c5dc5-a007-47f6-a513-1924576e6050"
 		}
 
-Ö´ĞĞtestplan£º
+æ‰§è¡Œtestplanï¼š
 
 	curl -s http://135.251.149.80:8774/v2.1/testplan -X POST -H "Content-Type:application/json" -d @testplan.json | python -m json.tool
 
 
-	testplan.json ÔÚÏîÄ¿¸ùÄ¿Â¼ÀïÃæ¡£ĞèÒª¸ù¾İÄãÊµ¼ÊÇé¿öĞŞ¸Äjson ÎÄ¼şÀïÃæSTA1ºÍSTA2 µØÖ·£¨STA1ÊÇ¼ÆËã½ÚµãµÄµØÖ·£¬STA2Ò²¿ÉÒÔÊÇ²»´æÔÚµÄµØÖ·¡£TestPlan²âÊÔµÄÊÇ´ÓSTA1 ping Í¨ STA2£©
+	testplan.json åœ¨é¡¹ç›®æ ¹ç›®å½•é‡Œé¢ã€‚éœ€è¦æ ¹æ®ä½ å®é™…æƒ…å†µä¿®æ”¹json æ–‡ä»¶é‡Œé¢STA1å’ŒSTA2 åœ°å€ï¼ˆSTA1æ˜¯è®¡ç®—èŠ‚ç‚¹çš„åœ°å€ï¼ŒSTA2ä¹Ÿå¯ä»¥æ˜¯ä¸å­˜åœ¨çš„åœ°å€ã€‚TestPlanæµ‹è¯•çš„æ˜¯ä»STA1 ping é€š STA2ï¼‰
 
-Í¬Ê±Äã»áµÃµ½Ò»¸öTestPlan ID¡£¿ÉÒÔÓÃÕâ¸öID À´²éÑ¯²âÊÔ½á¹û¡£
+åŒæ—¶ä½ ä¼šå¾—åˆ°ä¸€ä¸ªTestPlan IDã€‚å¯ä»¥ç”¨è¿™ä¸ªID æ¥æŸ¥è¯¢æµ‹è¯•ç»“æœã€‚
 
 	{
 		"TestPlan": 24
 	}
 
-²éÑ¯²âÊÔ½á¹û£º
+æŸ¥è¯¢æµ‹è¯•ç»“æœï¼š
 
 	curl -s http://135.251.149.80:8774/v2.1/testplan/24 | python -m json.tool
 
@@ -193,17 +193,17 @@
 			}
 		}
 
-²å¼ş±àĞ´£º
+æ’ä»¶ç¼–å†™ï¼š
 
-	ÖØĞÂ±äĞ´²å¼ş£¬Ê×ÏÈĞèÒªÔÚnova.iniÀïÃæÅäÖÃ compute_plugin=nova.compute.manager_linux_system.ComputeManager_linux_system,nova.compute.aaaaaa.bbbbbbb¡£Á½¸ö²å¼ş¼äÓÃ¶ººÅ·Ö¸ô¡£
+	é‡æ–°å˜å†™æ’ä»¶ï¼Œé¦–å…ˆéœ€è¦åœ¨nova.inié‡Œé¢é…ç½® compute_plugin=nova.compute.manager_linux_system.ComputeManager_linux_system,nova.compute.aaaaaa.bbbbbbbã€‚ä¸¤ä¸ªæ’ä»¶é—´ç”¨é€—å·åˆ†éš”ã€‚
 
-	nova.compute.manager_linux_system.ComputeManager_linux_system Õâ¸ö²å¼ş¶ÔÓ¦ÎÄ¼şÊÇpolar-bear/nova/compute/manager_linux_system
+	nova.compute.manager_linux_system.ComputeManager_linux_system è¿™ä¸ªæ’ä»¶å¯¹åº”æ–‡ä»¶æ˜¯polar-bear/nova/compute/manager_linux_system
 
-	ComputeManager_linux_systemÊÇÎÄ¼şÀïÃæµÄÒ»¸öÀà¡£¾ßÌå¿´ÏÂÃæ´úÂë
+	ComputeManager_linux_systemæ˜¯æ–‡ä»¶é‡Œé¢çš„ä¸€ä¸ªç±»ã€‚å…·ä½“çœ‹ä¸‹é¢ä»£ç 
 
-	¾ßÌå·½·¨Ç°Ãæ±ØĞë¼Ó¸ö×°ÊÎÆ÷ compute_utils.mark_describe_task ÓÃÀ´±ê¼Ç
+	å…·ä½“æ–¹æ³•å‰é¢å¿…é¡»åŠ ä¸ªè£…é¥°å™¨ compute_utils.mark_describe_task ç”¨æ¥æ ‡è®°
 
-	¾ßÌå·½·¨½áÊøÒÔÇ°±ØĞëÉÏ±¨ÏûÏ¢¸øconductor :  rpclient.RPCClient(topic=topic).result(ctxt=context, result=result) 
+	å…·ä½“æ–¹æ³•ç»“æŸä»¥å‰å¿…é¡»ä¸ŠæŠ¥æ¶ˆæ¯ç»™conductor :  rpclient.RPCClient(topic=topic).result(ctxt=context, result=result) 
 
 	class ComputeManager_linux_system(base.Base):
 
