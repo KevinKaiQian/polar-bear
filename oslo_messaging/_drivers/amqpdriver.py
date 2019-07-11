@@ -530,7 +530,8 @@ class AMQPDriverBase(base.BaseDriver):
 
         rpc_amqp._add_unique_id(msg)
         unique_id = msg[rpc_amqp.UNIQUE_ID]
-
+	print msg
+	print context
         rpc_amqp.pack_context(msg, context)
 
         if envelope:

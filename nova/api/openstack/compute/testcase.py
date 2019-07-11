@@ -54,7 +54,7 @@ class CaseController(wsgi.Controller):
     @extensions.expected_errors(404)
     def show(self, req, id):
         try:
-            
+            #import pdb;pdb.set_trace()
             context = req.environ['nova.context']
             result ={}
             try:
@@ -74,7 +74,7 @@ class CaseController(wsgi.Controller):
     @extensions.expected_errors((400, 403, 409))
     def create(self, req, body):
         try:
-            #import pdb;pdb.set_trace()
+   
             context = req.environ['nova.context']
             data = body
 

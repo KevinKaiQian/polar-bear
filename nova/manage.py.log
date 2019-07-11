@@ -1,0 +1,29 @@
+2019-06-30 17:04:22.197 2870 WARNING oslo_db.sqlalchemy.engines [-] SQL connection failed. 10 attempts left.
+2019-06-30 17:04:42.211 2870 WARNING oslo_db.sqlalchemy.engines [-] SQL connection failed. 9 attempts left.
+2019-06-30 17:05:02.235 2870 WARNING oslo_db.sqlalchemy.engines [-] SQL connection failed. 8 attempts left.
+2019-06-30 17:05:22.252 2870 WARNING oslo_db.sqlalchemy.engines [-] SQL connection failed. 7 attempts left.
+2019-06-30 17:05:42.279 2870 WARNING oslo_db.sqlalchemy.engines [-] SQL connection failed. 6 attempts left.
+2019-06-30 17:05:49.387 2870 CRITICAL nova [-] KeyboardInterrupt
+2019-06-30 17:05:49.387 2870 ERROR nova Traceback (most recent call last):
+2019-06-30 17:05:49.387 2870 ERROR nova   File "manage.py", line 167, in <module>
+2019-06-30 17:05:49.387 2870 ERROR nova     engine = get_engine()
+2019-06-30 17:05:49.387 2870 ERROR nova   File "manage.py", line 42, in get_engine
+2019-06-30 17:05:49.387 2870 ERROR nova     return db_session.get_api_engine()
+2019-06-30 17:05:49.387 2870 ERROR nova   File "/root/polar-bear/nova/db/sqlalchemy/api.py", line 140, in get_api_engine
+2019-06-30 17:05:49.387 2870 ERROR nova     return api_context_manager.get_legacy_facade().get_engine()
+2019-06-30 17:05:49.387 2870 ERROR nova   File "/root/polar-bear/oslo_db/sqlalchemy/enginefacade.py", line 667, in get_legacy_facade
+2019-06-30 17:05:49.387 2870 ERROR nova     return self._factory.get_legacy_facade()
+2019-06-30 17:05:49.387 2870 ERROR nova   File "/root/polar-bear/oslo_db/sqlalchemy/enginefacade.py", line 261, in get_legacy_facade
+2019-06-30 17:05:49.387 2870 ERROR nova     self._start()
+2019-06-30 17:05:49.387 2870 ERROR nova   File "/root/polar-bear/oslo_db/sqlalchemy/enginefacade.py", line 363, in _start
+2019-06-30 17:05:49.387 2870 ERROR nova     engine_args, maker_args)
+2019-06-30 17:05:49.387 2870 ERROR nova   File "/root/polar-bear/oslo_db/sqlalchemy/enginefacade.py", line 387, in _setup_for_connection
+2019-06-30 17:05:49.387 2870 ERROR nova     sql_connection=sql_connection, **engine_kwargs)
+2019-06-30 17:05:49.387 2870 ERROR nova   File "/root/polar-bear/oslo_db/sqlalchemy/engines.py", line 155, in create_engine
+2019-06-30 17:05:49.387 2870 ERROR nova     test_conn = _test_connection(engine, max_retries, retry_interval)
+2019-06-30 17:05:49.387 2870 ERROR nova   File "/root/polar-bear/oslo_db/sqlalchemy/engines.py", line 335, in _test_connection
+2019-06-30 17:05:49.387 2870 ERROR nova     time.sleep(retry_interval)
+2019-06-30 17:05:49.387 2870 ERROR nova KeyboardInterrupt
+2019-06-30 17:05:49.387 2870 ERROR nova 
+2019-06-30 17:11:10.590 3153 DEBUG oslo_db.sqlalchemy.engines [-] MySQL server mode set to STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_AUTO_CREATE_USER _check_effective_sql_mode /root/polar-bear/oslo_db/sqlalchemy/engines.py:261
+2019-06-30 17:11:51.700 3197 DEBUG oslo_db.sqlalchemy.engines [-] MySQL server mode set to STRICT_TRANS_TABLES,STRICT_ALL_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,TRADITIONAL,NO_AUTO_CREATE_USER _check_effective_sql_mode /root/polar-bear/oslo_db/sqlalchemy/engines.py:261

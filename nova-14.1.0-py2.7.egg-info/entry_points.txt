@@ -23,11 +23,12 @@ nova-spicehtml5proxy = nova.cmd.spicehtml5proxy:main
 nova-xvpvncproxy = nova.cmd.xvpvncproxy:main
 
 [nova.api.v21.extensions]
-flavors = nova.api.openstack.compute.flavors:Flavors
-fping = nova.api.openstack.compute.fping:Fping
+#flavors = nova.api.openstack.compute.flavors:Flavors
+#fping = nova.api.openstack.compute.fping:Fping
 versions = nova.api.openstack.compute.versionsV21:Versions
 testcase = nova.api.openstack.compute.testcase:Testcase
 slaves = nova.api.openstack.compute.slaves:Slaves
+testplan = nova.api.openstack.compute.testplan:Testplan
 
 
 [nova.api.v21.extensions.server.create]

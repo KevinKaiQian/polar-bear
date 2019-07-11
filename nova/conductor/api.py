@@ -182,6 +182,8 @@ class ComputeTaskAPI(object):
         
     def handle_cases(self, context,data):
         self.conductor_compute_rpcapi.handle_cases(context,data)
+    def handle_testplan(self, context,name="",environment= "",testplan=""):
+        self.conductor_compute_rpcapi.handle_testplan(context,name=name,environment= environment,testplan=testplan)
         
     def report_cases_result(self,context,Caseid="",output="",status="fail"):
         self.conductor_compute_rpcapi.report_cases_result(context,Caseid=Caseid,output=output,status=status)

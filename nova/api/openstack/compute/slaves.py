@@ -20,7 +20,7 @@ from nova.api.openstack import common
 from nova.api.openstack.compute.views import flavors as flavors_view
 from nova.api.openstack import extensions
 from nova.api.openstack import wsgi
-from nova.compute import flavors
+
 from nova import exception
 from nova.i18n import _
 from nova import utils

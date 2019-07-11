@@ -97,6 +97,13 @@ class ComputeTaskAPI(object):
         kw = {'data': data}
         cctxt = self.client.prepare(version=version)
         cctxt.cast(context, 'handle_cases', **kw)
+    def handle_testplan(self, context,name="",environment= "",testplan=""):
+
+        version = '1.10'
+        kw = {'data': {"name":name,"environment":environment,"testplan":testplan}}
+        cctxt = self.client.prepare(version=version)
+        cctxt.cast(context, 'handle_testplan', **kw)
+
 
     
     def report_cases_result(self, context,Caseid,output="",status="fail"):

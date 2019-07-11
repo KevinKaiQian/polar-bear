@@ -57,8 +57,8 @@ from sqlalchemy.sql import null
 from sqlalchemy.sql import true
 
 
-from nova.compute import task_states
-from nova.compute import vm_states
+
+
 from nova import config
 import nova.context
 from nova.db.sqlalchemy import models
@@ -685,6 +685,42 @@ def compute_node_search_by_hypervisor(context, hypervisor_match):
             all()
 
 
+
+
+
+@pick_context_manager_writer
+def testplan_create(context, values):
+    """Creates a new ComputeNode and populates the capacity fields
+    with the most recent data.
+    """
+    convert_objects_related_datetimes(values)
+
+    testplan_ref = models.TestPlan()
+    testplan_ref.update(values)
+    testplan_ref.save(context.session)
+
+    return testplan_ref
+
+@pick_context_manager_reader
+def testplan_get(context, testplan_id):
+    query = model_query(context, models.TestPlan).filter_by(id=testplan_id)
+
+    result = query.first()
+    if not result:
+        raise exception.CaseNotFound(testcase_id=testplan_id)
+
+    return result
+
+@oslo_db_api.wrap_db_retry(max_retries=5, retry_on_deadlock=True)
+@pick_context_manager_writer
+def testplan_update(context, testplan_id, values):
+    testplan_ref = testplan_get(context, testplan_id)
+
+    testplan_ref.update(values)
+
+    return testplan_ref
+
+
 @pick_context_manager_writer
 def testcase_create(context, values):
     """Creates a new ComputeNode and populates the capacity fields
@@ -708,6 +744,15 @@ def testcase_get(context, testcase_id):
 
     return result
 
+@oslo_db_api.wrap_db_retry(max_retries=5, retry_on_deadlock=True)
+@pick_context_manager_writer
+def testcase_update(context, testcase_id, values):
+    testcase_ref = testcase_get(context, testcase_id)
+
+    testcase_ref.update(values)
+
+    return testcase_ref
+
 @pick_context_manager_writer
 def compute_node_create(context, values):
     """Creates a new ComputeNode and populates the capacity fields
@@ -721,14 +766,6 @@ def compute_node_create(context, values):
 
     return compute_node_ref
 
-@oslo_db_api.wrap_db_retry(max_retries=5, retry_on_deadlock=True)
-@pick_context_manager_writer
-def testcase_update(context, testcase_id, values):
-    testcase_ref = testcase_get(context, testcase_id)
-
-    testcase_ref.update(values)
-
-    return testcase_ref
 
 
 @oslo_db_api.wrap_db_retry(max_retries=5, retry_on_deadlock=True)
@@ -2055,216 +2092,6 @@ def instance_get_all_by_filters(context, filters, sort_key, sort_dir,
                                             sort_dirs=[sort_dir])
 
 
-@require_context
-@pick_context_manager_reader_allow_async
-def instance_get_all_by_filters_sort(context, filters, limit=None, marker=None,
-                                     columns_to_join=None, sort_keys=None,
-                                     sort_dirs=None):
-    """Return instances that match all filters sorted by the given keys.
-    Deleted instances will be returned by default, unless there's a filter that
-    says otherwise.
-
-    Depending on the name of a filter, matching for that filter is
-    performed using either exact matching or as regular expression
-    matching. Exact matching is applied for the following filters::
-
-    |   ['project_id', 'user_id', 'image_ref',
-    |    'vm_state', 'instance_type_id', 'uuid',
-    |    'metadata', 'host', 'system_metadata']
-
-
-    A third type of filter (also using exact matching), filters
-    based on instance metadata tags when supplied under a special
-    key named 'filter'::
-
-    |   filters = {
-    |       'filter': [
-    |           {'name': 'tag-key', 'value': '<metakey>'},
-    |           {'name': 'tag-value', 'value': '<metaval>'},
-    |           {'name': 'tag:<metakey>', 'value': '<metaval>'}
-    |       ]
-    |   }
-
-    Special keys are used to tweek the query further::
-
-    |   'changes-since' - only return instances updated after
-    |   'deleted' - only return (or exclude) deleted instances
-    |   'soft_deleted' - modify behavior of 'deleted' to either
-    |                    include or exclude instances whose
-    |                    vm_state is SOFT_DELETED.
-
-    A fourth type of filter (also using exact matching), filters
-    based on instance tags (not metadata tags). There are two types
-    of these tags:
-
-    `tags` -- One or more strings that will be used to filter results
-            in an AND expression: T1 AND T2
-
-    `tags-any` -- One or more strings that will be used to filter results in
-            an OR expression: T1 OR T2
-
-    `not-tags` -- One or more strings that will be used to filter results in
-            an NOT AND expression: NOT (T1 AND T2)
-
-    `not-tags-any` -- One or more strings that will be used to filter results
-            in an NOT OR expression: NOT (T1 OR T2)
-
-    Tags should be represented as list::
-
-    |    filters = {
-    |        'tags': [some-tag, some-another-tag],
-    |        'tags-any: [some-any-tag, some-another-any-tag],
-    |        'not-tags: [some-not-tag, some-another-not-tag],
-    |        'not-tags-any: [some-not-any-tag, some-another-not-any-tag]
-    |    }
-
-    """
-    # NOTE(mriedem): If the limit is 0 there is no point in even going
-    # to the database since nothing is going to be returned anyway.
-    if limit == 0:
-        return []
-
-    sort_keys, sort_dirs = process_sort_params(sort_keys,
-                                               sort_dirs,
-                                               default_dir='desc')
-
-    if columns_to_join is None:
-        columns_to_join_new = ['info_cache', 'security_groups']
-        manual_joins = ['metadata', 'system_metadata']
-    else:
-        manual_joins, columns_to_join_new = (
-            _manual_join_columns(columns_to_join))
-
-    query_prefix = context.session.query(models.Instance)
-    for column in columns_to_join_new:
-        if 'extra.' in column:
-            query_prefix = query_prefix.options(undefer(column))
-        else:
-            query_prefix = query_prefix.options(joinedload(column))
-
-    # Note: order_by is done in the sqlalchemy.utils.py paginate_query(),
-    # no need to do it here as well
-
-    # Make a copy of the filters dictionary to use going forward, as we'll
-    # be modifying it and we shouldn't affect the caller's use of it.
-    filters = copy.deepcopy(filters)
-
-    if 'changes-since' in filters:
-        changes_since = timeutils.normalize_time(filters['changes-since'])
-        query_prefix = query_prefix.\
-                            filter(models.Instance.updated_at >= changes_since)
-
-    if 'deleted' in filters:
-        # Instances can be soft or hard deleted and the query needs to
-        # include or exclude both
-        deleted = filters.pop('deleted')
-        if deleted:
-            if filters.pop('soft_deleted', True):
-                delete = or_(
-                    models.Instance.deleted == models.Instance.id,
-                    models.Instance.vm_state == vm_states.SOFT_DELETED
-                    )
-                query_prefix = query_prefix.\
-                    filter(delete)
-            else:
-                query_prefix = query_prefix.\
-                    filter(models.Instance.deleted == models.Instance.id)
-        else:
-            query_prefix = query_prefix.\
-                    filter_by(deleted=0)
-            if not filters.pop('soft_deleted', False):
-                # It would be better to have vm_state not be nullable
-                # but until then we test it explicitly as a workaround.
-                not_soft_deleted = or_(
-                    models.Instance.vm_state != vm_states.SOFT_DELETED,
-                    models.Instance.vm_state == null()
-                    )
-                query_prefix = query_prefix.filter(not_soft_deleted)
-
-    if 'cleaned' in filters:
-        cleaned = 1 if filters.pop('cleaned') else 0
-        query_prefix = query_prefix.filter(models.Instance.cleaned == cleaned)
-
-    if 'tags' in filters:
-        tags = filters.pop('tags')
-        # We build a JOIN ladder expression for each tag, JOIN'ing
-        # the first tag to the instances table, and each subsequent
-        # tag to the last JOIN'd tags table
-        first_tag = tags.pop(0)
-        query_prefix = query_prefix.join(models.Instance.tags)
-        query_prefix = query_prefix.filter(models.Tag.tag == first_tag)
-
-        for tag in tags:
-            tag_alias = aliased(models.Tag)
-            query_prefix = query_prefix.join(tag_alias,
-                                             models.Instance.tags)
-            query_prefix = query_prefix.filter(tag_alias.tag == tag)
-
-    if 'tags-any' in filters:
-        tags = filters.pop('tags-any')
-        tag_alias = aliased(models.Tag)
-        query_prefix = query_prefix.join(tag_alias, models.Instance.tags)
-        query_prefix = query_prefix.filter(tag_alias.tag.in_(tags))
-
-    if 'not-tags' in filters:
-        tags = filters.pop('not-tags')
-        first_tag = tags.pop(0)
-        subq = query_prefix.session.query(models.Tag.resource_id)
-        subq = subq.join(models.Instance.tags)
-        subq = subq.filter(models.Tag.tag == first_tag)
-
-        for tag in tags:
-            tag_alias = aliased(models.Tag)
-            subq = subq.join(tag_alias, models.Instance.tags)
-            subq = subq.filter(tag_alias.tag == tag)
-
-        query_prefix = query_prefix.filter(~models.Instance.uuid.in_(subq))
-
-    if 'not-tags-any' in filters:
-        tags = filters.pop('not-tags-any')
-        query_prefix = query_prefix.filter(~models.Instance.tags.any(
-            models.Tag.tag.in_(tags)))
-
-    if not context.is_admin:
-        # If we're not admin context, add appropriate filter..
-        if context.project_id:
-            filters['project_id'] = context.project_id
-        else:
-            filters['user_id'] = context.user_id
-
-    # Filters for exact matches that we can do along with the SQL query...
-    # For other filters that don't match this, we will do regexp matching
-    exact_match_filter_names = ['project_id', 'user_id', 'image_ref',
-                                'vm_state', 'instance_type_id', 'uuid',
-                                'metadata', 'host', 'task_state',
-                                'system_metadata']
-
-    # Filter the query
-    query_prefix = _exact_instance_filter(query_prefix,
-                                filters, exact_match_filter_names)
-    if query_prefix is None:
-        return []
-    query_prefix = _regex_instance_filter(query_prefix, filters)
-    query_prefix = _tag_instance_filter(context, query_prefix, filters)
-
-    # paginate query
-    if marker is not None:
-        try:
-            marker = _instance_get_by_uuid(
-                    context.elevated(read_deleted='yes'), marker)
-        except exception.InstanceNotFound:
-            raise exception.MarkerNotFound(marker=marker)
-    try:
-        query_prefix = sqlalchemyutils.paginate_query(query_prefix,
-                               models.Instance, limit,
-                               sort_keys,
-                               marker=marker,
-                               sort_dirs=sort_dirs)
-    except db_exc.InvalidSortKey:
-        raise exception.InvalidSortKey()
-
-    return _instances_fill_metadata(context, query_prefix.all(), manual_joins)
-
 
 def _tag_instance_filter(context, query, filters):
     """Applies tag filtering to an Instance query.
@@ -2609,20 +2436,7 @@ def instance_floating_address_get_all(context, instance_uuid):
     return [floating_ip.address for floating_ip in floating_ips]
 
 
-# NOTE(hanlind): This method can be removed as conductor RPC API moves to v2.0.
-@pick_context_manager_reader
-def instance_get_all_hung_in_rebooting(context, reboot_window):
-    reboot_window = (timeutils.utcnow() -
-                     datetime.timedelta(seconds=reboot_window))
 
-    # NOTE(danms): this is only used in the _poll_rebooting_instances()
-    # call in compute/manager, so we can avoid the metadata lookups
-    # explicitly
-    return _instances_fill_metadata(context,
-        model_query(context, models.Instance).
-            filter(models.Instance.updated_at <= reboot_window).
-            filter_by(task_state=task_states.REBOOTING).all(),
-        manual_joins=[])
 
 
 def _retry_instance_update():
@@ -2702,121 +2516,6 @@ def _instance_metadata_update_in_place(context, instance, metadata_type, model,
         context.session.add(newitem)
         instance[metadata_type].append(newitem)
 
-
-def _instance_update(context, instance_uuid, values, expected, original=None):
-    if not uuidutils.is_uuid_like(instance_uuid):
-        raise exception.InvalidUUID(instance_uuid)
-
-    if expected is None:
-        expected = {}
-    else:
-        # Coerce all single values to singleton lists
-        expected = {k: [None] if v is None else sqlalchemyutils.to_list(v)
-                       for (k, v) in six.iteritems(expected)}
-
-    # Extract 'expected_' values from values dict, as these aren't actually
-    # updates
-    for field in ('task_state', 'vm_state'):
-        expected_field = 'expected_%s' % field
-        if expected_field in values:
-            value = values.pop(expected_field, None)
-            # Coerce all single values to singleton lists
-            if value is None:
-                expected[field] = [None]
-            else:
-                expected[field] = sqlalchemyutils.to_list(value)
-
-    # Values which need to be updated separately
-    metadata = values.pop('metadata', None)
-    system_metadata = values.pop('system_metadata', None)
-
-    _handle_objects_related_type_conversions(values)
-
-    # Hostname is potentially unique, but this is enforced in code rather
-    # than the DB. The query below races, but the number of users of
-    # osapi_compute_unique_server_name_scope is small, and a robust fix
-    # will be complex. This is intentionally left as is for the moment.
-    if 'hostname' in values:
-        _validate_unique_server_name(context, values['hostname'])
-
-    compare = models.Instance(uuid=instance_uuid, **expected)
-    try:
-        instance_ref = model_query(context, models.Instance,
-                                   project_only=True).\
-                       update_on_match(compare, 'uuid', values)
-    except update_match.NoRowsMatched:
-        # Update failed. Try to find why and raise a specific error.
-
-        # We should get here only because our expected values were not current
-        # when update_on_match executed. Having failed, we now have a hint that
-        # the values are out of date and should check them.
-
-        # This code is made more complex because we are using repeatable reads.
-        # If we have previously read the original instance in the current
-        # transaction, reading it again will return the same data, even though
-        # the above update failed because it has changed: it is not possible to
-        # determine what has changed in this transaction. In this case we raise
-        # UnknownInstanceUpdateConflict, which will cause the operation to be
-        # retried in a new transaction.
-
-        # Because of the above, if we have previously read the instance in the
-        # current transaction it will have been passed as 'original', and there
-        # is no point refreshing it. If we have not previously read the
-        # instance, we can fetch it here and we will get fresh data.
-        if original is None:
-            original = _instance_get_by_uuid(context, instance_uuid)
-
-        conflicts_expected = {}
-        conflicts_actual = {}
-        for (field, expected_values) in six.iteritems(expected):
-            actual = original[field]
-            if actual not in expected_values:
-                conflicts_expected[field] = expected_values
-                conflicts_actual[field] = actual
-
-        # Exception properties
-        exc_props = {
-            'instance_uuid': instance_uuid,
-            'expected': conflicts_expected,
-            'actual': conflicts_actual
-        }
-
-        # There was a conflict, but something (probably the MySQL read view,
-        # but possibly an exceptionally unlikely second race) is preventing us
-        # from seeing what it is. When we go round again we'll get a fresh
-        # transaction and a fresh read view.
-        if len(conflicts_actual) == 0:
-            raise exception.UnknownInstanceUpdateConflict(**exc_props)
-
-        # Task state gets special handling for convenience. We raise the
-        # specific error UnexpectedDeletingTaskStateError or
-        # UnexpectedTaskStateError as appropriate
-        if 'task_state' in conflicts_actual:
-            conflict_task_state = conflicts_actual['task_state']
-            if conflict_task_state == task_states.DELETING:
-                exc = exception.UnexpectedDeletingTaskStateError
-            else:
-                exc = exception.UnexpectedTaskStateError
-
-        # Everything else is an InstanceUpdateConflict
-        else:
-            exc = exception.InstanceUpdateConflict
-
-        raise exc(**exc_props)
-
-    if metadata is not None:
-        _instance_metadata_update_in_place(context, instance_ref,
-                                           'metadata',
-                                           models.InstanceMetadata,
-                                           metadata)
-
-    if system_metadata is not None:
-        _instance_metadata_update_in_place(context, instance_ref,
-                                           'system_metadata',
-                                           models.InstanceSystemMetadata,
-                                           system_metadata)
-
-    return instance_ref
 
 
 @pick_context_manager_writer

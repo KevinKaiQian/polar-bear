@@ -83,14 +83,14 @@ class ComputeCaseAPI(object):
         default_client = self.get_client(target, version_cap, serializer)
         self.router = rpc.ClientRouter(default_client)
 
-    def run(self, ctxt, host,method,parameters):
+    def run(self, ctxt, host,method,parameters,topic = None):
 
         version = '4.0'
         #import pdb;pdb.set_trace()
         cctxt = self.router.by_host(ctxt, host).prepare(
                 server=host, version=version)
         
-        cctxt.cast(ctxt, method, parameters = parameters)
+        cctxt.cast(ctxt, method, parameters = parameters,topic = topic)
     def get_client(self, target, version_cap, serializer):
         return rpc.get_client(target,
                               version_cap=version_cap,

@@ -17,15 +17,13 @@ import re
 from oslo_versionedobjects import fields
 import six
 
-# TODO(berrange) Temporary import for Arch class
-from nova.compute import arch
-# TODO(berrange) Temporary import for CPU* classes
-from nova.compute import cpumodel
+
+
 
 # TODO(berrange) Temporary import for HVType class
-from nova.compute import hv_type
+
 # TODO(berrange) Temporary import for VMMode class
-from nova.compute import vm_mode
+
 from nova import exception
 from nova.i18n import _
 
@@ -94,18 +92,7 @@ class BaseNovaEnum(Enum):
         super(BaseNovaEnum, self).__init__(valid_values=self.__class__.ALL)
 
 
-class Architecture(BaseNovaEnum):
-    # TODO(berrange): move all constants out of 'nova.compute.arch'
-    # into fields on this class
-    ALL = arch.ALL
 
-    def coerce(self, obj, attr, value):
-        try:
-            value = arch.canonicalize(value)
-        except exception.InvalidArchitectureName:
-            msg = _("Architecture name '%s' is not valid") % value
-            raise ValueError(msg)
-        return super(Architecture, self).coerce(obj, attr, value)
 
 
 class BlockDeviceDestinationType(BaseNovaEnum):
@@ -175,22 +162,6 @@ class CPUThreadAllocationPolicy(BaseNovaEnum):
     ALL = (PREFER, ISOLATE, REQUIRE)
 
 
-class CPUMode(BaseNovaEnum):
-    # TODO(berrange): move all constants out of 'nova.compute.cpumodel'
-    # into fields on this class
-    ALL = cpumodel.ALL_CPUMODES
-
-
-class CPUMatch(BaseNovaEnum):
-    # TODO(berrange): move all constants out of 'nova.compute.cpumodel'
-    # into fields on this class
-    ALL = cpumodel.ALL_MATCHES
-
-
-class CPUFeaturePolicy(BaseNovaEnum):
-    # TODO(berrange): move all constants out of 'nova.compute.cpumodel'
-    # into fields on this class
-    ALL = cpumodel.ALL_POLICIES
 
 
 class DiskBus(BaseNovaEnum):
@@ -216,18 +187,7 @@ class FirmwareType(BaseNovaEnum):
     ALL = (UEFI, BIOS)
 
 
-class HVType(BaseNovaEnum):
-    # TODO(berrange): move all constants out of 'nova.compute.hv_type'
-    # into fields on this class
-    ALL = hv_type.ALL
 
-    def coerce(self, obj, attr, value):
-        try:
-            value = hv_type.canonicalize(value)
-        except exception.InvalidHypervisorVirtType:
-            msg = _("Hypervisor virt type '%s' is not valid") % value
-            raise ValueError(msg)
-        return super(HVType, self).coerce(obj, attr, value)
 
 
 class ImageSignatureHashType(BaseNovaEnum):
@@ -340,18 +300,7 @@ class VideoModel(BaseNovaEnum):
 
 
 
-class VMMode(BaseNovaEnum):
-    # TODO(berrange): move all constants out of 'nova.compute.vm_mode'
-    # into fields on this class
-    ALL = vm_mode.ALL
 
-    def coerce(self, obj, attr, value):
-        try:
-            value = vm_mode.canonicalize(value)
-        except exception.InvalidVirtualMachineMode:
-            msg = _("Virtual machine mode '%s' is not valid") % value
-            raise ValueError(msg)
-        return super(VMMode, self).coerce(obj, attr, value)
 
 
 class WatchdogAction(BaseNovaEnum):
@@ -709,8 +658,7 @@ class IDEAddressField(AutoTypedField):
     AUTO_TYPE = IDEAddress()
 
 
-class ArchitectureField(BaseEnumField):
-    AUTO_TYPE = Architecture()
+
 
 
 class BlockDeviceDestinationTypeField(BaseEnumField):
@@ -737,16 +685,6 @@ class CPUThreadAllocationPolicyField(BaseEnumField):
     AUTO_TYPE = CPUThreadAllocationPolicy()
 
 
-class CPUModeField(BaseEnumField):
-    AUTO_TYPE = CPUMode()
-
-
-class CPUMatchField(BaseEnumField):
-    AUTO_TYPE = CPUMatch()
-
-
-class CPUFeaturePolicyField(BaseEnumField):
-    AUTO_TYPE = CPUFeaturePolicy()
 
 
 class DiskBusField(BaseEnumField):
@@ -757,8 +695,6 @@ class FirmwareTypeField(BaseEnumField):
     AUTO_TYPE = FirmwareType()
 
 
-class HVTypeField(BaseEnumField):
-    AUTO_TYPE = HVType()
 
 
 class ImageSignatureHashTypeField(BaseEnumField):
@@ -801,9 +737,6 @@ class SecureBootField(BaseEnumField):
 class VideoModelField(BaseEnumField):
     AUTO_TYPE = VideoModel()
 
-
-class VMModeField(BaseEnumField):
-    AUTO_TYPE = VMMode()
 
 
 class WatchdogActionField(BaseEnumField):
