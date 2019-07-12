@@ -44,7 +44,7 @@ class TestPlan(base.NovaPersistentObject, base.NovaObject,base.NovaObjectDictCom
         'ending': fields.DateTimeField(),
         'message': fields.StringField(),
         'result': fields.StringField(),
-        'errors': fields.IntegerField(),
+        'summary': fields.StringField(),
         }
 
 
