@@ -163,8 +163,8 @@ class TestPlan(BASE, NovaBase, models.SoftDeleteMixin):
                               nullable=True)
     ending = Column(DateTime, default=timeutils.utcnow,
                            nullable=True)
-    message = Column(MediumText(), default="0")
-    result = Column(String(255), default="0")
-    errors = Column(Integer(), default=0)
+    message = Column(MediumText(), default="")
+    result = Column(String(255), default="{}")
+    summary = Column(String(255), default="{}")
     
 

@@ -72,10 +72,12 @@ class ReportRPCAPI(object):
         self.StepId=StepId
     def result(self, context, arg):
         self.finish_flag= self.finish_flag-1
-
+	
         status = arg.get("status",None)
 
         out = arg.get("out",None)
+
+
         if status:
             self.report_result(context,status=status,out=out)
 
@@ -85,8 +87,9 @@ class ReportRPCAPI(object):
         def summary(template):
             total ,failure, sucessfully = 0,0,0
             for key ,value in template.items():
+
                 try:
-                    if isinstance(int(key),(int)):
+                    if isinstance(int(key),(int,)):
                         total+=1
                         summary_result = True
                         if isinstance(value,(dict,)):
@@ -108,7 +111,11 @@ class ReportRPCAPI(object):
         
         plan['message']=plan['message']+out
         
-        res['total'],res['failure'],res['sucessfully']=summary(res)
+        summary_result=json.loads(plan['summary'])
+
+        summary_result['total'],summary_result['failure'],summary_result['sucessfully']=summary(res)
+        summary_result['passratio']=int((float(summary_result['sucessfully'])/float(summary_result['total']))*100)
+        plan['summary']=json.dumps(summary_result)
         
         plan['result']=json.dumps(res)
 

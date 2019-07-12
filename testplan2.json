@@ -1,0 +1,106 @@
+{
+	"name":"linux test",
+	"environment": {
+					"Data": {
+								"STA1": "135.251.149.80",
+								"STA2": "135.251.149.203",
+								"STA3": "135.251.149.204",
+								"STA4": "135.251.149.157"
+							}
+	},
+	"testplan" : {
+					"1" : { 
+							"Parallel-Step-1" : {
+													"1" : {
+															"plugin": "linux_system",
+															"host": { "get_param": "Data:STA1" },
+															"method": "ping",
+															"parameters": {
+																			"address": { "get_param": "Data:STA2" },
+																			"count": "7"
+																		  }
+														},
+													"2" : {
+															"plugin": "linux_system",
+															"host": { "get_param": "Data:STA1" },
+															"method": "run_shell",
+															"parameters": {
+																			"cmd": "ls",
+																			"args": "-alt"
+																		  }
+														}
+												}
+						
+						},
+					"2" : { 
+							"Serial-Step-1" : 
+												{
+													"1" : {
+															"plugin": "linux_system",
+															"host": { "get_param": "Data:STA1" },
+															"method": "run_shell",
+															"parameters": {
+																			"cmd": "ls",
+																			"args": "-alt"
+																		  }
+														},
+
+													"2" : {
+															"plugin": "linux_system",
+															"host": { "get_param": "Data:STA1" },
+															"method": "run_shell",
+															"parameters": {
+																			"cmd": "ls",
+																			"args": "-alt"
+																		  }
+														}
+												},
+							"Serial-Step-2" : 
+												{
+													"1" : {
+															"plugin": "linux_system",
+															"host": { "get_param": "Data:STA1" },
+															"method": "run_shell",
+															"parameters": {
+																			"cmd": "ls",
+																			"args": "-alt"
+																		  }
+														}
+
+												}
+						},
+					"3" : { 
+							"Serial-Step-1" : {
+													"1" : {
+															"plugin": "linux_system",
+															"host": { "get_param": "Data:STA1" },
+															"method": "ping",
+															"parameters": {
+																			"address": { "get_param": "Data:STA3" },
+																			"count": "7"
+																		  }
+														}
+												}
+						
+						},
+					"4" : { 
+							"Serial-Step-1" : {
+													"1" : {
+															"plugin": "linux_system",
+															"host": { "get_param": "Data:STA1" },
+															"method": "ping",
+															"parameters": {
+																			"address": { "get_param": "Data:STA4" },
+																			"count": "7"
+																		  }
+														}
+												}
+						
+						}					
+						
+						
+						
+						
+									
+				}
+}
