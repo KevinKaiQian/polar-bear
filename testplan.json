@@ -2,10 +2,12 @@
 	"name":"linux test",
 	"environment": {
 					"Data": {
-								"STA1": "135.251.149.80",
-								"STA2": "135.251.149.105"
-							}
+								"STA1": "192.168.1.181",
+								"STA2": "192.168.1.183"
+							},
+					"mail": {"receiver" : "799463683@qq.com"  }
 	},
+	
 	"testplan" : {
 					"1" : { 
 							"Parallel-Step-1" : {

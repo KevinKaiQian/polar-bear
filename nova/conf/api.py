@@ -359,6 +359,24 @@ Related options:
 
 ]
 
+mail_opts = [
+
+
+    # TODO(aunnam): This option needs to be deprecated
+    cfg.StrOpt('sender',
+               default='xx',
+               help="",
+	       deprecated_for_removal=True),
+
+    cfg.StrOpt('mail_server',
+               default='xx',
+               help=""),
+
+    cfg.StrOpt('mail_password',
+               default='xx',
+               help=""),
+   ]
+
 
 ALL_OPTS = (auth_opts +
             metadata_opts +
@@ -369,7 +387,8 @@ ALL_OPTS = (auth_opts +
             fping_path_opts +
             os_network_opts +
             enable_inst_pw_opts +
-	    netconf_opts)
+	    netconf_opts+
+		mail_opts )
 
 
 def register_opts(conf):

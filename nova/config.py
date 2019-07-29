@@ -23,6 +23,7 @@ from nova.conf import upgrade_levels
 from nova.conf import servicegroup
 from nova.conf import scheduler
 from nova.conf import base
+#from nova.conf import mail
 #from nova.conf import netconf
 
 from nova.conf import remote_debug
@@ -44,6 +45,7 @@ upgrade_levels.register_opts(CONF)
 servicegroup.register_opts(CONF)
 scheduler.register_opts(CONF)
 base.register_opts(CONF)
+#mail.register_opts(CONF)
 #netconf.register_opts(CONF)
 
 remote_debug.register_cli_opts(CONF)
