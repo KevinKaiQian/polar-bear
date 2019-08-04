@@ -36,7 +36,6 @@ def send_mail(receiver='',summary='',attach=''):
         html += "</table>"
         return html
 
-    import pdb;pdb.set_trace()
     if receiver =='' or CONF.sender == '':
         return False
     if CONF.sender == '' or CONF.mail_password =='' or CONF.mail_server =='':

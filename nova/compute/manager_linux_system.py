@@ -89,7 +89,6 @@ class ComputeManager_linux_system(base.Base):
             ca_dir="/root"
             if arg == None:arg=""
             out, err =utils.execute(cmd, arg , cwd=ca_dir,run_as_root=True)
-            print "xxxx"+str(err)
             if err == '':res= "PASS"
             else:res = "FAIL"
             result={

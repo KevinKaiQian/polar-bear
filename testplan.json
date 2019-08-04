@@ -2,16 +2,18 @@
 	"name":"linux test",
 	"environment": {
 					"Data": {
-								"STA1": "135.251.149.69",
-								"STA2": "135.251.149.81"
+								"STA1": "192.168.1.181",
+								"STA2": "192.168.1.182"
 							},
 					"mail": {"receiver" : "qinkai19870515@126.com"  }
 	},
 	
 	"testplan" : {
 					"1" : { 
-							"Parallel-Step-1" : {
-													"1" : {
+							"Parallel-Step-1" : {                           
+													"DESCRIPTION":"init device ",
+													"1" : {         
+															"DESCRIPTION":"Test ping from STA1 to STA2",
 															"plugin": "linux_system",
 															"host": { "get_param": "Data:STA1" },
 															"method": "ping",
@@ -20,6 +22,32 @@
 																			"count": "7"
 																		  }
 														},
+													"2" : {		
+															"DESCRIPTION":"run shell command line",
+															"plugin": "linux_system",
+															"host": { "get_param": "Data:STA1" },
+															"method": "run_shell",
+															"parameters": {
+																			"cmd": "ls",
+																			"args": "-alt"
+																		  }
+														}
+									   }
+						
+						},
+					"2" : { 
+							"Serial-Step-1" : 
+												{	"DESCRIPTION":"init device STA1 ",
+													"1" : {
+															"plugin": "linux_system",
+															"host": { "get_param": "Data:STA1" },
+															"method": "run_shell",
+															"parameters": {
+																			"cmd": "ls",
+																			"args": "-alt"
+																		  }
+														},
+
 													"2" : {
 															"plugin": "linux_system",
 															"host": { "get_param": "Data:STA1" },
@@ -29,10 +57,21 @@
 																			"args": "-alt"
 																		  }
 														}
+												},
+							"Serial-Step-2" : 
+												{	"DESCRIPTION":"Test shell ls -alt ",
+													"1" : {
+															"plugin": "linux_system",
+															"host": { "get_param": "Data:STA1" },
+															"method": "run_shell",
+															"parameters": {
+																			"cmd": "ls",
+																			"args": "-alt"
+																		  }
+														}
+
 												}
-						
 						}
-	
 									
 				}
 }

@@ -268,7 +268,7 @@ class AMQPListener(base.PollStyleListener):
                                     'msg_id': ctxt.msg_id})
         else:
             LOG.debug("received message with unique_id: %s", unique_id)
-	print message
+	#print message
         self.incoming.append(AMQPIncomingMessage(
             self,
             ctxt.to_dict(),
@@ -531,7 +531,7 @@ class AMQPDriverBase(base.BaseDriver):
         rpc_amqp._add_unique_id(msg)
         unique_id = msg[rpc_amqp.UNIQUE_ID]
 	print msg
-	print context
+	#print context
         rpc_amqp.pack_context(msg, context)
 
         if envelope:

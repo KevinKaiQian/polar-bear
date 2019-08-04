@@ -65,14 +65,13 @@ class ReportRPCAPI(object):
 
     target = messaging.Target(namespace=_NAMESPACE, version='1.1')
 
-    def __init__(self,finish_flag,PlanId=None,CaseId=None,StepId=None):
+    def __init__(self,finish_flag,PlanId=None,CaseId=None,description=None):
         self.finish_flag = finish_flag
         self.Plan_Id=PlanId
         self.CaseId= CaseId
-        self.StepId=StepId
+        self.description=description
     def result(self, context, arg):
         self.finish_flag= self.finish_flag-1
-	
         status = arg.get("status",None)
 
         out = arg.get("out",None)
@@ -107,7 +106,7 @@ class ReportRPCAPI(object):
         plan=objects.TestPlan.get_by_id(context,self.Plan_Id)
         
         res=json.loads(plan['result'])
-        res[self.CaseId][self.StepId]=status
+        res[self.CaseId][self.description]=status
         
         plan['message']=plan['message']+out
         
