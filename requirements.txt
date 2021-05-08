@@ -2,7 +2,7 @@ Babel==0.9.6
 monotonic==1.5
 enum34==1.0.4
 stevedore==1.30.0
-eventlet==0.24.1
+eventlet==0.31.0
 fasteners==0.14.1
 PasteDeploy==2.0.1
 Paste==3.0.6
