@@ -1,6 +1,6 @@
 
 
-这个项目是基于openstack框架重构的测试框架。保留了api conductor 和 compute 模块。在github上我没有上传一部分关键代码，不能安装。
+这个项目是基于openstack框架重构的测试框架。
 
 目标：
 	以api模块为对外交互通道。controller整合了conductor和schedule,负责所有逻辑和模板解析。
@@ -103,7 +103,6 @@
 
 
 
-
 使用方法：
 
 启动服务：
@@ -115,63 +114,52 @@
 
 查询所有的slave节概况：
 	
-	curl -s http://192.168.1.181:8774/v2.1/slaves| python -m json.tool
+curl -s http://168.138.209.49:8774/v2.1/slaves| python -m json.tool
 
 
-		{
-			"850c5dc5-a007-47f6-a513-1924576e6050": {
-				"host": "192.168.1.181",
-				"id": 1
-			}
-		}
+	{
+	    "f6bc1be1-0654-4c89-b823-36376da509d5": {
+		"host": "10.0.0.22",
+		"id": 1
+	    }
+	}
 	
 查询所有的slave节点具体的信息：
 
-	curl -s http://192.168.1.181:8774/v2.1/slaves/detail | python -m json.tool
+	curl -s http://168.138.209.49:8774/v2.1/slaves/detail | python -m json.tool
 
-		{
-			"850c5dc5-a007-47f6-a513-1924576e6050": {
-				"compute_node_method": {
-					"build_server": {
-						"ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet"
-					},
-					"linux_system": {
-						"ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet",
-						"run_shell": "parameters is dict. cmd is command line. args is parameter"
-					}
-				},
-				"compute_node_type": "linux_system,build_server",
-				"host": "192.168.1.181",
-				"id": 1
-			}
-		}
-
-查询单个slave节点具体的信息：
-
-	curl -s http://192.168.1.181:8774/v2.1/slaves/1 | python -m json.tool
-
-		{
-			"compute_node_method": {
-				"build_server": {
-					"ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet"
-				},
-				"linux_system": {
-					"ping": "parameters is dict. address is target address count is count of ping . interval is time of two packet",
-					"run_shell": "parameters is dict. cmd is command line. args is parameter"
-				}
+	{
+	    "f6bc1be1-0654-4c89-b823-36376da509d5": {
+		"compute_node_method": {
+		    "docker": {
+			"parameters": {
+			    "action": "docker action method",
+			    "image": "docker image name"
 			},
-			"compute_node_type": "linux_system,build_server",
-			"host": "192.168.1.181",
-			"id": 1,
-			"uuid": "850c5dc5-a007-47f6-a513-1924576e6050"
-		}
+			"start_container": "operate on the container"
+		    },
+		    "http": {
+			"get": "Http Get method interface",
+			"parameters": {
+			    "url": "http request url ,default is none"
+			},
+			"post": "Http post method interface"
+		    }
+		},
+		"compute_node_type": "docker,http",
+		"host": "10.0.0.22",
+		"id": 1
+	    }
+	}
+
+
 
 执行testplan：
 
-	curl -s http://135.251.149.80:8774/v2.1/testplan -X POST -H "Content-Type:application/json" -d @testplan.json | python -m json.tool
+	curl -s http://168.138.209.49:8774/v2.1/testplan -X POST -H "Content-Type:application/json" -d @test.json | python -m json.tool
 
 
-	testplan.json 在项目根目录里面。需要根据你实际情况修改json 文件里面STA1和STA2 地址（STA1是计算节点的地址，STA2也可以是不存在的地址。TestPlan测试的是从STA1 ping 通 STA2）
+	test.json 在根目录里面。需要根据你实际情况修改json 。
 
 同时你会得到一个TestPlan ID。可以用这个ID 来查询测试结果。
 
@@ -179,108 +167,217 @@
 		"TestPlan": 24
 	}
 
+
 查询测试结果：
 
-	curl -s http://135.251.149.80:8774/v2.1/testplan/24 | python -m json.tool
+curl -s http://168.138.209.49:8774/v2.1/testplan/40 | python -m json.tool 
 
-		{
-			"1": {
-				"Parallel-Step-1": "PASS"
-			},
-			"2": {
-				"Serial-Step-1": "PASS",
-				"Serial-Step-2": "PASS"
-			}
-		}
+{
+    "TestCase : 1": {
+        "TestStep : 1": {
+            "input": {
+                "host": "10.0.0.22",
+                "method": "start_container",
+                "parameters": {
+                    "api_version": "auto",
+                    "auth_email": "None",
+                    "cap_add": [],
+                    "command": "/bin/bash -c 'cd /root/http/ && python manage.py 9000'",
+                    "detach": "True",
+                    "environment": {
+                        "demo": "this is demo"
+                    },
+                    "graceful_timeout": 10,
+                    "image": "http",
+                    "labels": {},
+                    "name": "centos",
+                    "privileged": "True",
+                    "remove_on_exit": "True",
+                    "restart_policy": "unless-stopped",
+                    "restart_retries": 10,
+                    "security_opt": [],
+                    "state": "running",
+                    "tty": "True",
+                    "volumes": [
+                        "/dev/:/dev/"
+                    ],
+                    "volumes_from": "None"
+                },
+                "plugin": "docker"
+            },
+            "output": {
+                "log": "start container successfully",
+                "result": "PASS"
+            }
+        },
+        "TestStep : 2": {
+            "input": {
+                "host": "10.0.0.22",
+                "method": "docker_command",
+                "parameters": {
+                    "command": "/bin/bash -c 'ps -ef | grep python'",
+                    "name": "centos"
+                },
+                "plugin": "docker"
+            },
+            "output": {
+                "log": "root         1     0  0 08:11 pts/4    00:00:00 /bin/bash -c cd /root/http/ && python manage.py 9000",
+                "result": "PASS"
+            }
+        },
+        "TestStep : 3": {
+            "input": {
+                "host": "10.0.0.22",
+                "method": "get",
+                "parameters": {
+                    "url": "http://0.0.0.0:9000/v1/"
+                },
+                "plugin": "http"
+            },
+            "output": {
+                "log": "{\"summary\": \"this is plus demo\"}",
+                "result": "PASS"
+            }
+        },
+        "TestStep : 4": {
+            "input": {
+                "host": "10.0.0.22",
+                "method": "post",
+                "parameters": {
+                    "data": {
+                        "value1": "20",
+                        "value2": "30"
+                    },
+                    "url": "http://0.0.0.0:9000/v1/add"
+                },
+                "plugin": "http"
+            },
+            "output": {
+                "log": "{\"result\": true, \"value\": 50}",
+                "result": "PASS"
+            }
+        },
+        "TestStep : 5": {
+            "input": {
+                "host": "10.0.0.22",
+                "method": "post",
+                "parameters": {
+                    "data": {
+                        "value1": "211",
+                        "value2": "130"
+                    },
+                    "url": "http://0.0.0.0:9000/v1/add"
+                },
+                "plugin": "http"
+            },
+            "output": {
+                "log": "{\"result\": true, \"value\": 341}",
+                "result": "PASS"
+            }
+        },
+        "TestStep : 6": {
+            "input": {
+                "host": "10.0.0.22",
+                "method": "post",
+                "parameters": {
+                    "data": {
+                        "value1": "50",
+                        "value2": "890"
+                    },
+                    "url": "http://0.0.0.0:9000/v1/add"
+                },
+                "plugin": "http"
+            },
+            "output": {
+                "log": "{\"result\": true, \"value\": 940}",
+                "result": "PASS"
+            }
+        },
+        "TestStep : 7": {
+            "input": {
+                "host": "10.0.0.22",
+                "method": "remove_container",
+                "parameters": {
+                    "api_version": "auto",
+                    "auth_email": "None",
+                    "cap_add": [],
+                    "command": "/bin/bash -c 'cd /root/http/ && python manage.py 9000'",
+                    "detach": "True",
+                    "environment": {
+                        "demo": "this is demo"
+                    },
+                    "graceful_timeout": 10,
+                    "image": "http",
+                    "labels": {},
+                    "name": "centos",
+                    "privileged": "True",
+                    "remove_on_exit": "True",
+                    "restart_policy": "unless-stopped",
+                    "restart_retries": 10,
+                    "security_opt": [],
+                    "state": "running",
+                    "stepid": "1",
+                    "tty": "True",
+                    "volumes": [
+                        "/dev/:/dev/"
+                    ],
+                    "volumes_from": "None"
+                },
+                "plugin": "docker"
+            },
+            "output": {
+                "log": "start container successfully",
+                "result": "PASS"
+            }
+        }
+    }
+}
 
 插件编写：
 
-	重新变写插件，首先需要在nova.ini里面配置 compute_plugin=nova.compute.manager_linux_system.ComputeManager_linux_system,nova.compute.aaaaaa.bbbbbbb。两个插件间用逗号分隔。
+	重新变写插件，首先需要在nova.ini里面配置 nova.compute.manager_http.ComputeManager_http,nova.compute.manager_docker.ComputeManager_docker
 
-	nova.compute.manager_linux_system.ComputeManager_linux_system 这个插件对应文件是polar-bear/nova/compute/manager_linux_system
 
-	ComputeManager_linux_system是文件里面的一个类。具体看下面代码
 
-	具体方法前面必须加个装饰器 compute_utils.mark_describe_task 用来标记
+	class ComputeManager_http(base.Base):
 
-	具体方法结束以前必须上报消息给conductor :  rpclient.RPCClient(topic=topic).result(ctxt=context, result=result) 
+	    target = messaging.Target(namespace='http', version='4.0')
 
-	class ComputeManager_linux_system(base.Base):
+	    def __init__(self):
+		super(ComputeManager_http, self).__init__()
+		self.compute_rpcapi = compute_rpcapi.ComputeAPI()
+		self.servicegroup_api = servicegroup.API()
+		self.compute_task_api = conductor.ComputeTaskAPI()
 
-		target = messaging.Target(namespace='linux_system', version='4.0')
-		
-		def __init__(self):
-			super(ComputeManager_linux_system, self).__init__()
-			self.compute_rpcapi = compute_rpcapi.ComputeAPI()
-			self.servicegroup_api = servicegroup.API()
-			self.compute_task_api = conductor.ComputeTaskAPI()
-			
 
-		def reset(self):
-			LOG.info(_LI('Reloading compute RPC API'))
-			compute_rpcapi.LAST_VERSION = None
-			self.compute_rpcapi = compute_rpcapi.ComputeAPI()
+	    def reset(self):
+		LOG.info(_LI('Reloading compute RPC API'))
+		compute_rpcapi.LAST_VERSION = None
+		self.compute_rpcapi = compute_rpcapi.ComputeAPI()
 
-		@compute_utils.mark_describe_task(namespace='linux_system',
-										  describe="parameters is dict. address is target address ,count is count of ping . interval is time of two packet")
-		def ping(self, context, parameters,topic):
-
-			address=parameters.get('address',None)
-			count= "-c "+str(parameters.get('count',4))
-			interval="-i "+str( parameters.get('interval',1))
-			err=-1
-			if address == None:
-				result={
-					"out":"has not cmd parameters, can not run",
-					"status": "FAIL",
-					"method":"ping"
-				}       
-				if topic:
-					rpclient.RPCClient(topic=topic).result(ctxt=context, result=result) 
-			else:
-				ca_dir="/root"
-				try:
-					out, err =utils.execute('ping', address,count ,interval, cwd=ca_dir,run_as_root=True)
-				except Exception as e:
-					out=e.message
-				if err == '':res= "PASS"
-				else:res = "FAIL"
-
-				result={
-					"out":out,
-					"status": res,
-					"method":"ping"
-				}
-				if topic:
-					rpclient.RPCClient(topic=topic).result(ctxt=context, result=result)        
-			
-		@compute_utils.mark_describe_task(namespace='linux_system',
-										  describe="parameters is dict. cmd is command line. args is parameter")
-		def run_shell(self, context, parameters,topic):
-			cmd= parameters.get('cmd',None)
-			arg= parameters.get('args',None)
-
-			if cmd == None:
-				result={
-					"out":"has not cmd parameters, can not run",
-					"status": "FAIL",
-					"method":"run_shell"
-				}       
-				if topic:
-					rpclient.RPCClient(topic=topic).result(ctxt=context, result=result) 
-			else:
-				ca_dir="/root"
-				if arg == None:arg=""
-				out, err =utils.execute(cmd, arg , cwd=ca_dir,run_as_root=True)
-				print "xxxx"+str(err)
-				if err == '':res= "PASS"
-				else:res = "FAIL"
-				result={
-					"out":out,
-					"status": res,
-					"method":"run_shell"
-				}
-				if topic:
-					rpclient.RPCClient(topic=topic).result(ctxt=context, result=result)
+	    @compute_utils.mark_describe_task(namespace='http',
+					      describe="Http Get method interface",
+					      parameters={'url':"http request url ,default is none"})
+	    def get(self, context, parameters,topic):
+		LOG.info(_LI("http request: %s"),
+			 json.dumps(parameters))
+		out,status,method = '','FAIL','get'
+		url = parameters.get('url', None)
+		stepid = parameters.get('stepid', None)
+		try:
+		    response = requests.get(url=url)
+		    if response.status_code == 200:
+			status = "PASS"
+		    else:
+			status = "FAIL"
+		    out = response.text
+		    LOG.info("xx"+str(url))
+		    rpclient.RPCClient(topic=topic).result(ctxt=context, method=method, out=out, status=status, stepid=stepid)
+		except BaseException as e:
+		    status = "FAIL"
+		    out=str(e.message)
+		    LOG.info(_LI("http get fail reason: %s"),
+			     e.message)
+		    rpclient.RPCClient(topic=topic).result(ctxt=context, method=method, out=out, status=status, stepid=stepid)
 
 
