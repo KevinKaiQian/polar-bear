@@ -1,22 +1,22 @@
 
+polar-bear项目定位为自动化测试框架 ，代码是基于openstack nova项目来进行二次开发的。
 
-这个项目是基于openstack框架重构的测试框架。
-
-目标：
-	以api模块为对外交互通道。controller整合了conductor和schedule,负责所有逻辑和模板解析。
-	compute 模块抽象成测试设备，抽象的方式是以plugin的形式完成的。比如抽象成编译插件 部署插件 测试用例插件 。一个compute可以同时拥有其中一个或者多个插件。
+框架结构：
+        第一部分：
+	nova-api作为对外的入口，接受各种平台发起的restful api 的请求。
+	
+	第二部分：负责业务调度、日志收集、业务分发（任务顺序或则并发）
+	nova-condutor 和nova-schedule 合并组成
+	
+	第三部分：测试实现层 
+	由nova-compute修改而来，以插件理念来编写实现层代码。 目前简单了实现了docker 和 http 插件（稍后介绍由这2个插件来实现一个testplan）
+	
     
-架构概况：
-	用户发送消息到 api, api初步处理数据然后发送给controller。
-	controller 负责模板的解析,compute节点的调度, 日志的收集。
-	compute 就是实现层,执行测试步骤。
-	大致概况参考图片：overview.png
-
     
 安装准备：
 	1.所有的安装是基于centos系统（最好没有安装过python其它库的，有可能产生冲突。系统最好也是centos，原则上其它系统也可以，出问题自己调整下）
-	2.python 使用python2.7。 我没有使用six 模块来兼容python3
-	3.准备一个数据库
+	2.python 使用python2.7
+	3.mysql数据库
     
 安装步骤：
 
@@ -48,8 +48,6 @@
      easy_install pip
 
      pip install -r requirements.txt
-
-     requirements.txt在项目根目录
 
 
 修改配置文件：
@@ -95,12 +93,11 @@
 
 创建数据库nova：
 
-	mysql必须自己安装,在mysql里面创建一个名字为nova的database。
-
+	mysql必须自己安装,需要手动创建创建一个nova的database。
+	
 创建数据库表：
 
 	cd polar-bear/nova/cmd 执行命令python manage.py（在nova database 创建表）
-
 
 
 使用方法：
@@ -151,17 +148,19 @@ curl -s http://168.138.209.49:8774/v2.1/slaves| python -m json.tool
 		"id": 1
 	    }
 	}
-
-
+	
+	上面是一个测试station，同时具备http 和docker 插件提供的功能
+	
 
 执行testplan：
 
+        这个测试用例实现了一个简单的http app 。编译成容器image交给测试框架来测试http app 提供的功能。test.json 是测试用例（文件再代码根目录）
+	
 	curl -s http://168.138.209.49:8774/v2.1/testplan -X POST -H "Content-Type:application/json" -d @test.json | python -m json.tool
 
 
-	test.json 在根目录里面。需要根据你实际情况修改json 。
 
-同时你会得到一个TestPlan ID。可以用这个ID 来查询测试结果。
+执行用例会得到一个TestPlan ID。后续用这个ID 来查询测试结果。
 
 	{
 		"TestPlan": 24
@@ -333,10 +332,7 @@ curl -s http://168.138.209.49:8774/v2.1/testplan/40 | python -m json.tool
     }
 }
 
-插件编写：
-
-	重新变写插件，首先需要在nova.ini里面配置 nova.compute.manager_http.ComputeManager_http,nova.compute.manager_docker.ComputeManager_docker
-
+插件代码：
 
 
 	class ComputeManager_http(base.Base):
