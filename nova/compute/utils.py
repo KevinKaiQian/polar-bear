@@ -77,7 +77,8 @@ def mark_describe_task(**kwargs):
     def decorator(f):
         if kwargs.has_key('describe') and kwargs.has_key('namespace'):
             f._describe= kwargs.pop('describe','describe method usage and parameters')
-            f._namespace= kwargs.pop('namespace','compute_case')
+            f._namespace= kwargs.pop('namespace',None)
+            f._parameters=kwargs.pop('parameters',None)
             f._method_mark= True
 
                    

@@ -19,9 +19,15 @@ class RPCClient(object):
         self.report_rpcapi = reportrpc.ReportAPI(topic=topic)
         
 
-    def result(self, ctxt, result):
+    def result(self, ctxt, method,out,status,stepid):
+        arg={
+            'method':method,
+            'out':out,
+            'status':status,
+            'stepid':stepid
+        }
         try:
-            self.report_rpcapi.result(ctxt, arg=result,timeout=120)
+            self.report_rpcapi.result(ctxt, arg=arg,timeout=120)
         except messaging.MessagingTimeout:
 
             LOG.warning(_LW('Timed out waiting for nova-conductor.  '
