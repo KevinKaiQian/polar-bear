@@ -1,4 +1,4 @@
-Babel==0.9.6
+Babel==2.9.1
 monotonic==1.5
 enum34==1.0.4
 stevedore==1.30.0
